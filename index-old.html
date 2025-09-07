@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bauhaus - Architecture Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'yellow-accent': '#FFD700',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-white text-gray-900">
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 bg-black mr-2"></div>
+                    <span class="text-xl font-bold">bauhaus</span>
+                </div>
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#" class="text-gray-700 hover:text-black">Home</a>
+                    <a href="#" class="text-gray-700 hover:text-black">About</a>
+                    <a href="#" class="text-gray-700 hover:text-black">Projects</a>
+                    <a href="#" class="text-gray-700 hover:text-black">Services</a>
+                    <a href="#" class="text-gray-700 hover:text-black">Contact</a>
+                </nav>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-600">Call Us: (+001) 2345 67 89</span>
+                    <div class="flex space-x-2">
+                        <a href="#" class="text-gray-600 hover:text-black">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
+                        </a>
+                        <a href="#" class="text-gray-600 hover:text-black">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z"/></svg>
+                        </a>
+                        <a href="#" class="text-gray-600 hover:text-black">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative h-screen bg-cover bg-center" style="background-image: url('/placeholder.svg?height=800&width=1200');">
+        <div class="absolute inset-0 bg-black bg-opacity-30"></div>
+        <div class="relative z-10 flex items-center justify-center h-full">
+            <div class="text-center text-white max-w-2xl px-4">
+                <div class="border-2 border-yellow-accent p-8 mb-8 inline-block">
+                    <h1 class="text-5xl md:text-6xl font-bold mb-4">The luxury residence in forest</h1>
+                </div>
+                <div class="flex justify-center space-x-4">
+                    <button class="w-3 h-3 bg-white rounded-full"></button>
+                    <button class="w-3 h-3 bg-gray-400 rounded-full"></button>
+                    <button class="w-3 h-3 bg-gray-400 rounded-full"></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-4xl font-bold mb-6">We Are The Leader In The Architectural</h2>
+                    <p class="text-gray-600 mb-8 leading-relaxed">
+                        For each project we establish relationships with partners who we know will help us create added value for your project. As well as bringing together the public and private sectors, we make sector-overarching links to gather knowledge and to learn from each other.
+                    </p>
+                    <div class="border-l-4 border-yellow-accent pl-8">
+                        <div class="text-5xl font-bold mb-2">26</div>
+                        <div class="text-gray-600">
+                            <div>YEARS</div>
+                            <div>Experience</div>
+                            <div>Working</div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <img src="/placeholder.svg?height=500&width=600" alt="Modern Architecture" class="w-full h-auto rounded-lg shadow-lg">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Latest Projects -->
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center mb-12">
+                <h2 class="text-4xl font-bold">Latest Projects</h2>
+                <div class="flex space-x-4">
+                    <button class="px-6 py-2 bg-yellow-accent text-black rounded-full">Building</button>
+                    <button class="px-6 py-2 text-gray-600 hover:bg-gray-200 rounded-full">Interior & Exterior</button>
+                    <button class="px-6 py-2 text-gray-600 hover:bg-gray-200 rounded-full">Office Design</button>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white rounded-lg overflow-hidden shadow-lg">
+                    <div class="relative h-64 bg-cover bg-center" style="background-image: url('/placeholder.svg?height=300&width=400');">
+                        <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+                        <div class="absolute bottom-4 left-4 text-white">
+                            <h3 class="text-xl font-bold mb-1">Triangle Concrete House On Lake</h3>
+                            <p class="text-sm opacity-90">New project</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg overflow-hidden shadow-lg">
+                    <div class="relative h-64 bg-cover bg-center" style="background-image: url('/placeholder.svg?height=300&width=400');">
+                        <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+                        <div class="absolute bottom-4 left-4 text-white">
+                            <h3 class="text-xl font-bold mb-1">Ocean Museum Italy</h3>
+                            <p class="text-sm opacity-90">New project</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg overflow-hidden shadow-lg">
+                    <div class="relative h-64 bg-cover bg-center" style="background-image: url('/placeholder.svg?height=300&width=400');">
+                        <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+                        <div class="absolute bottom-4 left-4 text-white">
+                            <h3 class="text-xl font-bold mb-1">Life Working Building</h3>
+                            <p class="text-sm opacity-90">New project</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Client Testimonials -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center mb-12">
+                <h2 class="text-4xl font-bold">From Great Our Clients</h2>
+                <div class="flex space-x-2">
+                    <button class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                    </button>
+                    <button class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-gray-50 p-8 rounded-lg">
+                    <div class="flex items-center mb-4">
+                        <img src="/placeholder.svg?height=60&width=60" alt="Client" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-bold">Adam Stone</h4>
+                            <p class="text-gray-600 text-sm">CEO, Stone Company</p>
+                        </div>
+                    </div>
+                    <div class="text-yellow-accent text-2xl mb-4">"</div>
+                    <p class="text-gray-700 leading-relaxed">
+                        I just wanted to share a quick note and let you know that you guys do a really good job. I'm glad I decided to work with you. It's really great how easy your websites are to update and manage.
+                    </p>
+                </div>
+                <div class="bg-gray-50 p-8 rounded-lg">
+                    <div class="flex items-center mb-4">
+                        <img src="/placeholder.svg?height=60&width=60" alt="Client" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-bold">Amanda Davis</h4>
+                            <p class="text-gray-600 text-sm">Manager, Davis Inc</p>
+                        </div>
+                    </div>
+                    <div class="text-yellow-accent text-2xl mb-4">"</div>
+                    <p class="text-gray-700 leading-relaxed">
+                        I just wanted to share a quick note and let you know that you guys do a really good job. I'm glad I decided to work with you. It's really great how easy your websites are to update and manage.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Client Logos -->
+    <section class="py-12 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-center items-center space-x-12 opacity-60">
+                <div class="text-lg font-bold">HIGHLIGHT</div>
+                <div class="text-lg font-bold">LOGO MEDIA</div>
+                <div class="text-lg font-bold">EXPLORE</div>
+                <div class="text-lg font-bold">DESIGN STUDIO</div>
+                <div class="text-lg font-bold">LOGO</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Latest News -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center mb-12">
+                <h2 class="text-4xl font-bold">Latest News</h2>
+                <a href="#" class="text-gray-600 hover:text-black">All Article →</a>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <article class="bg-white rounded-lg overflow-hidden shadow-lg">
+                    <img src="/placeholder.svg?height=300&width=500" alt="News" class="w-full h-64 object-cover">
+                    <div class="p-6">
+                        <div class="text-sm text-gray-500 mb-2">Architecture • March 15, 2024</div>
+                        <h3 class="text-xl font-bold mb-3">Modern Wooden Architecture: Sustainable Design for the Future</h3>
+                        <p class="text-gray-600 leading-relaxed">Exploring innovative approaches to sustainable architecture using natural materials and energy-efficient design principles.</p>
+                    </div>
+                </article>
+                <article class="bg-white rounded-lg overflow-hidden shadow-lg">
+                    <img src="/placeholder.svg?height=300&width=500" alt="News" class="w-full h-64 object-cover">
+                    <div class="p-6">
+                        <div class="text-sm text-gray-500 mb-2">Design • March 12, 2024</div>
+                        <h3 class="text-xl font-bold mb-3">Industrial Aesthetics: The Beauty of Raw Materials</h3>
+                        <p class="text-gray-600 leading-relaxed">How contemporary architects are embracing industrial materials to create stunning residential and commercial spaces.</p>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <div class="w-8 h-8 bg-white mr-2"></div>
+                        <span class="text-xl font-bold">bauhaus</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">© Bauhaus 2024</p>
+                    <p class="text-gray-400 text-sm">All rights reserved</p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Web Map</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-white">Home</a></li>
+                        <li><a href="#" class="hover:text-white">About</a></li>
+                        <li><a href="#" class="hover:text-white">Projects</a></li>
+                        <li><a href="#" class="hover:text-white">Services</a></li>
+                        <li><a href="#" class="hover:text-white">Blog</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Our Location</h4>
+                    <div class="text-sm text-gray-400 space-y-1">
+                        <p>Germany</p>
+                        <p>Berlin</p>
+                        <p>Contact</p>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Help</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z"/></svg>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
