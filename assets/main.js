@@ -1,3 +1,58 @@
+// Component loading functionality with fallback
+// Slide menu and header initialization (now handled by PHP includes)
+document.addEventListener('DOMContentLoaded', function() {
+
+  function loadHTML(elementId, filePath) {
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", filePath, false);
+        try {
+            xhr.send();
+            if (xhr.status === 200) {
+                document.getElementById(elementId).innerHTML = xhr.responseText;
+            }
+        } catch (e) {
+            console.error("Error loading file:", e);
+        }
+    }
+
+    loadHTML("header-placeholder", "components/header.html");
+    loadHTML("slide-menu-placeholder", "components/slide-menu.html");
+    loadHTML("footer-placeholder", "components/footer.html");
+
+  // Set dynamic year in copyright
+  const currentYearElement = document.getElementById('currentYear');
+  if (currentYearElement) {
+    currentYearElement.textContent = new Date().getFullYear();
+  }
+  
+  // Set dynamic year in footer
+  const footerYearElement = document.getElementById('footerYear');
+  if (footerYearElement) {
+    footerYearElement.textContent = new Date().getFullYear();
+  }
+
+  //handleHeaderScroll();
+  // If slide menu is present, initialize its functionality
+  const openMenuBtn = document.getElementById('openMenuBtn');
+  const closeMenuBtn = document.getElementById('closeMenuBtn');
+  const slideMenu = document.getElementById('slideMenu');
+  const menuOverlay = document.getElementById('menuOverlay');
+  if (openMenuBtn && closeMenuBtn && slideMenu && menuOverlay) {
+    openMenuBtn.addEventListener('click', function() {
+      slideMenu.classList.add('open');
+      menuOverlay.classList.add('show');
+    });
+    closeMenuBtn.addEventListener('click', function() {
+      slideMenu.classList.remove('open');
+      menuOverlay.classList.remove('show');
+    });
+    menuOverlay.addEventListener('click', function() {
+      slideMenu.classList.remove('open');
+      menuOverlay.classList.remove('show');
+    });
+  }
+});
+
 // Main JavaScript for Vizstar Builder
 
 // Carousel functionality
@@ -58,7 +113,7 @@ let scrollThreshold = 50;
 function handleHeaderScroll() {
   const header = document.querySelector('.header');
   const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-  
+  if (!header) return;
   if (scrollTop > scrollThreshold) {
     // Scrolled down past threshold - show header with scrolled styling
     header.classList.add('header-scrolled');
@@ -68,7 +123,6 @@ function handleHeaderScroll() {
     header.classList.remove('header-scrolled');
     header.classList.remove('header-hidden');
   }
-  
   lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
 }
 
@@ -109,24 +163,7 @@ window.addEventListener('DOMContentLoaded', function() {
   }, 700);
 });
 
-// Slide menu functionality
-const openMenuBtn = document.getElementById('openMenuBtn');
-const closeMenuBtn = document.getElementById('closeMenuBtn');
-const slideMenu = document.getElementById('slideMenu');
-const menuOverlay = document.getElementById('menuOverlay');
-
-openMenuBtn.addEventListener('click', function() {
-  slideMenu.classList.add('open');
-  menuOverlay.classList.add('show');
-});
-closeMenuBtn.addEventListener('click', function() {
-  slideMenu.classList.remove('open');
-  menuOverlay.classList.remove('show');
-});
-menuOverlay.addEventListener('click', function() {
-  slideMenu.classList.remove('open');
-  menuOverlay.classList.remove('show');
-});
+// Slide menu functionality is now initialized in initializeSlideMenu() after component loading
 
 // Projects filter and carousel functionality
 const filterBtns = document.querySelectorAll('.filter-btn');

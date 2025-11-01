@@ -1,0 +1,19 @@
+{
+  "projects": [
+    {
+      "id": "luxury-forest-residence",
+      "title": "The Luxury Residence In Forest",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut wisi enim ad minim veniam.",
+      "client": "Ethan Hunt",
+      "completion": "2017-02-05",
+      "projectType": "Villa, Residence",
+      "architects": "Logan Cee",
+      "coverIndex": 0,
+      "images": [
+        { "src": "assets/images/carousel1.jpg", "alt": "Exterior view 1" },
+        { "src": "assets/images/carousel2.jpg", "alt": "Living room view" },
+        { "src": "assets/images/carousel3.jpg", "alt": "Bedroom view" }
+      ]
+    }
+  ]
+}

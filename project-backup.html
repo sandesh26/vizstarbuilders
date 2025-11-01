@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Luxury Residence In Forest</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="assets/style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Poppins', Arial, sans-serif;
+            background: #fff;
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-bg-container {
+            position: absolute;
+            top: 80px;
+            left: 40px;
+            right: 40px;
+            width: calc(100vw - 80px);
+            height: calc(100vh - 80px);
+            z-index: 5;
+        }
+
+        .project-bg {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .project-bg.transitioning {
+            transform: scale(1.05);
+            filter: blur(2px);
+        }
+
+        .project-main-content {
+            position: relative;
+            z-index: 10;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+            padding-left: 5%;
+            padding-top: 120px;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .project-info-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 0;
+            padding: 30px 35px 30px 35px;
+            width: 380px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+
+        .project-info-card.hidden {
+            padding: 15px 35px;
+            gap: 0;
+            width: 380px;
+            height: 50px;
+            justify-content: center;
+            align-items: left;
+        }
+
+        .project-info-content {
+            transition: all 1.6s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 1;
+            max-height: 1000px;
+            overflow: hidden;
+        }
+
+        .project-info-content.hidden {
+            opacity: 0;
+            max-height: 0;
+            margin-top: 0;
+            margin-bottom: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+
+        .project-hide-info {
+            font-size: 0.75rem;
+            color: #666;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            margin-bottom: 12px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: color 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .project-info-card.hidden .project-hide-info {
+            margin-bottom: 0;
+        }
+
+        .project-hide-info:hover {
+            color: #444;
+        }
+
+        .project-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin: 0 0 16px 0;
+            line-height: 1.25;
+            letter-spacing: -0.02em;
+        }
+
+        .project-desc {
+            color: #555;
+            font-size: 0.9rem;
+            line-height: 1.55;
+            margin-bottom: 20px;
+            font-weight: 400;
+        }
+
+        .project-details-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .project-details-table td {
+            padding: 8px 0;
+            font-size: 0.9rem;
+            color: #1a1a1a;
+            vertical-align: top;
+        }
+
+        .project-details-table td:first-child {
+            color: #666;
+            font-weight: 500;
+            width: 35%;
+            padding-right: 15px;
+        }
+
+        .project-details-table td:last-child {
+            font-weight: 400;
+        }
+
+        .project-share-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .project-share-label {
+            color: #666;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-right: 8px;
+        }
+
+        .project-share-icons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .project-share-icons a {
+            color: #1a1a1a;
+            font-size: 1rem;
+            transition: color 0.2s;
+            text-decoration: none;
+        }
+
+        .project-share-icons a:hover {
+            color: #666;
+        }
+
+        .project-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #1a1a1a;
+            cursor: pointer;
+            z-index: 15;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .project-arrow:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        .project-arrow:active {
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        .project-arrow.left {
+            left: 40px;
+        }
+
+        .project-arrow.right {
+            right: 40px;
+        }
+
+        .project-thumbnail-strip {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 8px;
+            z-index: 20;
+        }
+
+        .project-thumbnail {
+            width: 60px;
+            height: 40px;
+            object-fit: cover;
+            cursor: pointer;
+            opacity: 0.6;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+            filter: grayscale(0.5);
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .project-thumbnail:hover {
+            opacity: 0.9;
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            filter: grayscale(0);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+
+        .project-thumbnail.active {
+            opacity: 1;
+            border-color: rgba(255, 255, 255, 0.8);
+            filter: grayscale(0);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .project-bg-container {
+                top: 60px;
+                left: 10px;
+                right: 10px;
+                width: calc(100vw - 20px);
+                height: calc(100vh - 60px);
+            }
+
+            .project-main-content {
+                justify-content: center;
+                padding-left: 0;
+                padding-top: 100px;
+            }
+
+            .project-info-card {
+                width: 90vw;
+                max-width: 350px;
+                padding: 30px 25px;
+            }
+
+            .project-arrow.left {
+                left: 15px;
+            }
+
+            .project-arrow.right {
+                right: 15px;
+            }
+
+            .project-thumbnail-strip {
+                bottom: 15px;
+                right: 15px;
+            }
+
+            .project-thumbnail {
+                width: 50px;
+                height: 35px;
+            }
+
+            .project-thumbnail:hover {
+                transform: translateY(-1px) scale(1.05);
+            }
+
+            .project-thumbnail.active {
+                transform: scale(1.1);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header Component Placeholder -->
+    <div id="header-placeholder"></div>
+
+    <div class="project-bg-container">
+        <img class="project-bg" src="assets/images/carousel1.jpg" alt="Project Background" />
+        
+        <div class="project-thumbnail-strip">
+            <img src="assets/images/carousel1.jpg" alt="Thumbnail 1" class="project-thumbnail active">
+            <img src="assets/images/carousel2.jpg" alt="Thumbnail 2" class="project-thumbnail">
+            <img src="assets/images/carousel3.jpg" alt="Thumbnail 3" class="project-thumbnail">
+        </div>
+    </div>
+
+        <div class="project-main-content">
+            <button class="project-arrow left" aria-label="Previous Project"><i
+                    class="fas fa-chevron-left"></i></button>
+            <div class="project-info-card">
+                <div class="project-hide-info">HIDE INFORMATION</div>
+                <div class="project-info-content">
+                    <h1 class="project-title">The Luxury Residence<br>In Forest</h1>
+                    <p class="project-desc">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed diam nonummy nibh euismod tincidunt
+                        ut
+                        laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam. Duis autem vel eum
+                        iriure
+                        dolor in hendrerit in.
+                    </p>
+                    <table class="project-details-table">
+                        <tr>
+                            <td>Clients:</td>
+                            <td>Ethan Hunt</td>
+                        </tr>
+                        <tr>
+                            <td>Completion:</td>
+                            <td>February 5th, 2017</td>
+                        </tr>
+                        <tr>
+                            <td>Project Type:</td>
+                            <td>Villa, Residence</td>
+                        </tr>
+                        <tr>
+                            <td>Architects:</td>
+                            <td>Logan Cee</td>
+                        </tr>
+                    </table>
+                    <!-- <div class="project-share-row">
+                    <span class="project-share-label">Share:</span>
+                    <div class="project-share-icons">
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Google Plus"><i class="fab fa-google-plus-g"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" aria-label="Pinterest"><i class="fab fa-pinterest-p"></i></a>
+                    </div>
+                </div> -->
+                </div>
+            </div>
+            <button class="project-arrow right" aria-label="Next Project"><i class="fas fa-chevron-right"></i></button>
+        </div>
+    </div>
+    <script>
+        // Project images for this specific project
+        const projectImages = [
+            "assets/images/carousel1.jpg",
+            "assets/images/carousel2.jpg",
+            "assets/images/carousel3.jpg"
+        ];
+
+        let currentImageIndex = 0;
+
+        // DOM elements
+        const projectBg = document.querySelector('.project-bg');
+        const thumbnails = document.querySelectorAll('.project-thumbnail');
+        const leftArrow = document.querySelector('.project-arrow.left');
+        const rightArrow = document.querySelector('.project-arrow.right');
+
+        // Update only the background image
+        function updateBackgroundImage(index) {
+            // Prevent rapid clicking
+            if (projectBg.classList.contains('transitioning')) return;
+
+            // Add transition class
+            projectBg.classList.add('transitioning');
+
+            // Create smooth transition with overlay effect
+            const transitionOverlay = document.createElement('div');
+            transitionOverlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0,0,0,0.3);
+        z-index: 1;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        pointer-events: none;
+      `;
+            document.body.appendChild(transitionOverlay);
+
+            // Fade in overlay
+            setTimeout(() => {
+                transitionOverlay.style.opacity = '1';
+            }, 50);
+
+            // Change image after transition starts
+            setTimeout(() => {
+                projectBg.src = projectImages[index];
+
+                // Remove transition effects
+                setTimeout(() => {
+                    projectBg.classList.remove('transitioning');
+                    transitionOverlay.style.opacity = '0';
+
+                    // Remove overlay after fade out
+                    setTimeout(() => {
+                        document.body.removeChild(transitionOverlay);
+                    }, 400);
+                }, 100);
+            }, 400);
+
+            // Update thumbnails with stagger effect
+            thumbnails.forEach((thumb, i) => {
+                setTimeout(() => {
+                    thumb.classList.toggle('active', i === index);
+                }, i * 50);
+            });
+
+            currentImageIndex = index;
+        }
+
+        // Navigation functions
+        function nextImage() {
+            const next = (currentImageIndex + 1) % projectImages.length;
+            updateBackgroundImage(next);
+        }
+
+        function prevImage() {
+            const prev = (currentImageIndex - 1 + projectImages.length) % projectImages.length;
+            updateBackgroundImage(prev);
+        }
+
+        // Event listeners
+        leftArrow.addEventListener('click', prevImage);
+        rightArrow.addEventListener('click', nextImage);
+
+        // Thumbnail clicks
+        thumbnails.forEach((thumb, index) => {
+            thumb.addEventListener('click', () => updateBackgroundImage(index));
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') prevImage();
+            if (e.key === 'ArrowRight') nextImage();
+        });
+
+        // Hide/Show info functionality
+        const hideInfo = document.querySelector('.project-hide-info');
+        const infoCard = document.querySelector('.project-info-card');
+        const infoContent = document.querySelector('.project-info-content');
+        const mainContent = document.querySelector('.project-main-content');
+        let isHidden = false;
+
+        hideInfo.addEventListener('click', () => {
+            // Prevent multiple clicks during animation
+            hideInfo.style.pointerEvents = 'none';
+
+            isHidden = !isHidden;
+
+            if (isHidden) {
+                // Hide: Content fades first, then card shrinks
+                infoContent.classList.add('hidden');
+                setTimeout(() => {
+                    infoCard.classList.add('hidden');
+                    hideInfo.textContent = 'SHOW INFORMATION';
+                }, 400);
+            } else {
+                // Show: Card expands first, then show content
+                hideInfo.textContent = 'HIDE INFORMATION';
+                infoCard.classList.remove('hidden');
+                setTimeout(() => {
+                    infoContent.classList.remove('hidden');
+                }, 600);
+            }
+
+            // Re-enable clicking after animation completes
+            setTimeout(() => {
+                hideInfo.style.pointerEvents = 'auto';
+            }, 1000);
+        });
+
+        // Remove the old transition style since it's now in CSS
+        // infoCard.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+
+        // Add subtle loading animation
+        function addLoadingEffect() {
+            const loader = document.createElement('div');
+            loader.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 40px;
+        height: 40px;
+        border: 3px solid rgba(255,255,255,0.3);
+        border-top: 3px solid rgba(255,255,255,0.8);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        z-index: 10;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      `;
+
+            const style = document.createElement('style');
+            style.textContent = `
+        @keyframes spin {
+          0% { transform: translate(-50%, -50%) rotate(0deg); }
+          100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+      `;
+            document.head.appendChild(style);
+
+            return loader;
+        }
+    </script>
+
+    <div id="slide-menu-placeholder"></div>
+    <div id="footer-placeholder"></div>
+
+    <script src="assets/main.js"></script>
+</body>
+
+</html>
