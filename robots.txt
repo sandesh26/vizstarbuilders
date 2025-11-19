@@ -1,0 +1,10 @@
+User-agent: *
+Disallow:
+
+Sitemap: http://www.vizstar.com/
+Sitemap: http://www.vizstar.com/game
+Sitemap: http://www.vizstar.com/footer
+Sitemap: http://www.vizstar.com/index
+Sitemap: http://www.vizstar.com/privacy-policy
+Sitemap: http://www.vizstar.com/terms-and-conditions
+Sitemap: http://www.vizstar.com/sitemap.xml

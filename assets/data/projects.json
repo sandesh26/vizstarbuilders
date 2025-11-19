@@ -1,25 +1,8 @@
 {
   "projects": [
     {
-      "id": "luxury-forest-residence",
-      "title": "The Luxury Residence In Forest",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut wisi enim ad minim veniam.",
-      "client": "Ethan Hunt",
-      "completion": "2017-02-05",
-      "projectType": "Villa, Residence",
-      "architects": "Logan Cee",
-      "area": "",
-      "location": "",
-      "status": "",
-      "coverIndex": 0,
-      "images": [
-        { "src": "assets/images/carousel1.jpg", "alt": "Exterior view 1" },
-        { "src": "assets/images/carousel2.jpg", "alt": "Living room view" },
-        { "src": "assets/images/carousel3.jpg", "alt": "Bedroom view" }
-      ]
-    },
-    {
       "id": "mandrem",
+      "url": "/project/mandrem",
       "title": "Mandrem Villa",
       "description": "A stunning contemporary villa nestled in the serene coastal town of Mandrem. This project showcases modern architectural design seamlessly blended with tropical aesthetics, featuring expansive open spaces, natural materials and panoramic views.",
       "client": "Private Residence",
@@ -43,6 +26,7 @@
     },
     {
       "id": "parra",
+      "url": "/project/parra",
       "title": "Parra Villa",
       "description": "A beautifully styled villa in the heritage village of Parra. This project celebrates architecture with modern amenities.",
       "client": "Private Residence",
@@ -57,12 +41,12 @@
         { "src": "assets/images/projects/parra/parra-2.jpg", "alt": "Parra 2" },
         { "src": "assets/images/projects/parra/parra-3.jpg", "alt": "Parra 3" },
         { "src": "assets/images/projects/parra/parra-4.jpg", "alt": "Parra 4" },
-        { "src": "assets/images/projects/parra/parra-5.jpg", "alt": "Parra 5" },
-        { "src": "assets/images/projects/parra/parra-6.jpg", "alt": "Parra 6" }
+        { "src": "assets/images/projects/parra/parra-5.jpg", "alt": "Parra 5" }
       ]
     },
     {
       "id": "sangolda",
+      "url": "/project/sangolda",
       "title": "Sangolda Modern Residence",
       "description": "A minimalist modern residence designed for a young family in the peaceful village of Sangolda. The project emphasizes clean lines, natural light, and sustainable building practices.",
       "client": "Private Residence",
@@ -78,6 +62,7 @@
     },
     {
       "id": "sernabatim",
+      "url": "/project/sernabatim",
       "title": "Sernabatim Luxury Villa",
       "description": "An exclusive  luxury villa in the picturesque coastal village of Sernabatim. This comprehensive project includes stunning exterior architecture with swimming pools, landscaped gardens and meticulously designed interiors that offer guests an unparalleled experience of modern luxury.",
       "client": "Private Residence",
@@ -124,6 +109,7 @@
     },
     {
       "id": "vizstar",
+      "url": "/project/vizstar",
       "title": "Vizstar Office Project",
       "description": "Commercial interior project for Vizstar Builder's new office",
       "client": "Vizstar Builders",
@@ -149,6 +135,7 @@
     },
     {
       "id": "assagao",
+      "url": "/project/assagao",
       "title": "Assagao Artisan Village",
       "description": "An upcoming cultural and artisan village project in the artistic hub of Assagao. This innovative development will feature artist studios, craft workshops, and boutique accommodations that celebrate Goa's rich cultural heritage while providing modern facilities for creative professionals and cultural tourism.",
       "client": "Goa Arts & Culture Foundation",

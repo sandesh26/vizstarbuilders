@@ -26,6 +26,82 @@
     min-width: 0;
     max-width: 100%;
     margin-bottom: 8px;
+
+/* ------------------------------------------------------------------ */
+/* Styles moved from contact.html (contact page specific styles)       */
+/* ------------------------------------------------------------------ */
+
+/* Page-specific styles for contact page hero and layout */
+.hero-contacts {
+  position: relative;
+  height: 420px;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.35) 100%);
+}
+.hero-inner {
+  position: relative;
+  text-align: center;
+  z-index: 3;
+}
+.hero-title { font-size: 40px; letter-spacing: 2px; font-weight:700; margin-bottom:6px; }
+.hero-breadcrumb { font-size: 12px; opacity: 0.85; }
+
+/* Contact band across hero */
+.contact-band {
+  position: relative;
+  margin: -70px auto 40px;
+  max-width: 1100px;
+  background: rgba(30,30,30,1);
+  color: #fff;
+  display: flex;
+  gap: 1px;
+  box-shadow: 0 6px 30px rgba(0,0,0,0.2);
+  z-index: 4;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.contact-band .band-item { flex:1; padding:28px 30px; text-align:center; z-index:100; }
+.band-item i { font-size: 26px; margin-bottom:10px; display:block; color:#d7c08a; }
+.band-item h4 { margin:6px 0 6px; font-size:14px; text-transform:uppercase; letter-spacing:1px; }
+.band-item p { font-size:13px; opacity:0.9; }
+
+main { max-width:1200px; margin: 20px auto 80px; padding: 0 20px; }
+
+.drop-line-title { text-align:center; font-weight:700; margin-top:18px; margin-bottom:8px; }
+.drop-sub { text-align:center; color:#666; margin-bottom:30px; }
+
+.form-and-gallery { display:flex; gap:30px; align-items:flex-start; }
+.contact-form-wrap { flex:1; background:#fff; border:1px solid #eee; padding:22px; box-shadow:0 6px 18px rgba(0,0,0,0.04); }
+.contact-form input, .contact-form textarea { width:100%; padding:12px; margin-bottom:12px; border:1px solid #ddd; }
+.contact-form button { padding:10px 18px; background:#222; color:#fff; border:0; cursor:pointer; }
+
+.gallery-block { width:420px; display:flex; flex-direction:column; gap:18px; }
+.gallery-photos { display:flex; gap:18px; }
+.gallery-photos img { width:100%; display:block; object-fit:cover; }
+.gallery-photos .col { flex:1; }
+.how-text { background:#fff; border:1px solid #eee; padding:18px; color:#333; }
+
+.map-wrap { margin-top:40px; border-radius:2px; overflow:hidden; box-shadow:0 6px 24px rgba(0,0,0,0.08); }
+
+@media (max-width:900px){
+  .form-and-gallery { flex-direction:column; }
+  .gallery-block { width:100%; }
+  .contact-band { margin: -40px 16px 24px; }
+  .hero-contacts{height:320px}
+  .hero-title{font-size:28px}
+}
+
+/* End of contact page moved styles */
+
     align-items: center;
     justify-content: flex-start;
   }
@@ -1410,10 +1486,10 @@
   max-width: 1400px;
   margin: 0 auto;
   padding: 0 32px;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
+  display: flex;
   align-items: center;
   gap: 24px;
+  justify-content: space-between;
   min-height: 60px;
 }
 
@@ -1421,16 +1497,16 @@
   color: #666666;
   font-size: 0.85rem;
   text-align: left;
-  justify-self: start;
-  margin-left: 0;
-  padding-left: 0;
+  flex: 0 0 auto;
+  margin: 0;
 }
 
 .footer-center {
   display: flex;
   align-items: center;
   gap: 16px;
-  justify-self: center;
+  flex: 1 1 auto;
+  justify-content: center;
   text-align: center;
 }
 
@@ -1456,7 +1532,20 @@
   font-size: 0.85rem;
   color: #666666;
   text-align: right;
-  justify-self: end;
+  flex: 0 0 auto;
+}
+
+/* Responsive: stack footer bottom items on small screens */
+@media (max-width: 768px) {
+  .footer-bottom-content {
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px 20px;
+    text-align: center;
+    align-items: center;
+  }
+  .footer-center { justify-content: center; }
+  .footer-designed-by { text-align: center; }
 }
 
 .footer-designed-by .seicho-link {
@@ -1469,6 +1558,15 @@
 .footer-designed-by .seicho-link:hover {
   color: #35a8af;
   text-decoration: underline;
+}
+
+/* Specific override: remove underline on hover/focus for the seicho attribution link */
+.seicho-link {
+  text-decoration: none !important;
+}
+.seicho-link:hover,
+.seicho-link:focus {
+  text-decoration: none !important;
 }
 
 /* Heartbeat animation */
@@ -2119,7 +2217,7 @@ body {
 }
 .about-img {
   width: 100%;
-  max-width: 420px;
+  max-width: 470px;
   height: 520px;
   object-fit: cover;
   border-radius: 0;
@@ -2128,7 +2226,7 @@ body {
   z-index: 2;
   background: #eee;
   margin-left: 0;
-  margin-top: 0;
+  margin-top: 100px;
 }
   @media (max-width: 1100px) {
     .about-container {
@@ -2399,7 +2497,7 @@ body {
   }
 
   .projects-title {
-    font-size: 2.5rem;
+    font-size: 2.0rem;
     font-weight: 700;
     color: #111;
     margin: 0;
@@ -2626,7 +2724,7 @@ body {
   }
 
   .testimonials-title {
-    font-size: 2.5rem;
+    font-size: 2.0rem;
     font-weight: 700;
     color: #111;
     margin: 0;

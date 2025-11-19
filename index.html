@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vizstar Builder</title>
+  <title>Vizstar Builders</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
@@ -20,7 +20,7 @@
   <section class="carousel-section">
     <div class="carousel-container">
       <div class="carousel-slide active">
-        <img src="assets/images/carousel1.jpg" alt="Project 1" />
+        <img src="assets/images/projects/sernabatim/sernabatim-exterior-2.jpg" alt="Sernabatim Project" />
         <div
           style="display: flex; gap: 48px; align-items: flex-start; position: absolute; left: 8vw; top: 8vh; z-index: 4;">
           <div style="display: flex; flex-direction: column; align-items: center;">
@@ -30,14 +30,14 @@
         <div class="hero-text-overlay">
           <div class="hero-label">Residential</div>
           <div class="hero-title"><span>The luxury<br>residence in<br>forest</span></div>
-          <a href="#" class="hero-link">See project <span class="arrow">→</span></a>
+          <a href="project?project=sernabatim" class="hero-link">See project <span class="arrow">→</span></a>
         </div>
       </div>
       <div class="carousel-slide">
-        <img src="assets/images/carousel2.jpg" alt="Project 2" />
+        <img src="assets/images/projects/parra/parra-1.jpg" alt="Parra Project" />
       </div>
       <div class="carousel-slide">
-        <img src="assets/images/carousel3.jpg" alt="Project 3" />
+        <img src="assets/images/projects/sangolda/sangolda.jpg" alt="Sangolda Project" />
       </div>
       <div class="carousel-dots">
         <span class="dot active"></span>
@@ -71,7 +71,7 @@
         </div>
         <div class="about-right">
           <div class="about-img-bg"></div>
-          <img class="about-img" src="assets/images/carousel1.jpg" alt="About Vizstar" />
+          <img class="about-img" src="assets/images/projects/mandrem/mandrem-1.jpg" alt="Mandrem Project" />
         </div>
       </div>
     </div>
@@ -83,98 +83,67 @@
       <h2 class="projects-title">Latest Projects</h2>
       <div class="projects-filters">
         <button class="filter-btn active" data-filter="all">All</button>
-        <button class="filter-btn" data-filter="building">Building</button>
+        <button class="filter-btn" data-filter="villa">Villa</button>
+        <button class="filter-btn" data-filter="upcoming">Upcoming</button>
         <button class="filter-btn" data-filter="interior">Interior & Exterior</button>
         <a href="#" class="view-all-projects">View All Projects</a>
       </div>
     </div>
     <div class="projects-list cards-layout">
-      <div class="project-card" data-category="building">
+      <div class="project-card" data-category="villa">
         <div class="project-img-wrapper">
           <img
-            src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
-            alt="Triangle Concrete House On Lake" class="project-img" />
+            src="assets/images/projects/mandrem/mandrem-1.jpg"
+            alt="Mandrem Villa" class="project-img" 
+            style="object-fit: cover;"/>
         </div>
         <div class="project-info">
-          <div class="project-title">Triangle Concrete House<br>On Lake</div>
-          <a href="#" class="project-link">See project <span class="arrow">&rarr;</span></a>
+          <div class="project-title">Mandrem Villa</div>
+          <a href="/project?project=mandrem" target="_blank" class="project-link">See project <span class="arrow">&rarr;</span></a>
         </div>
       </div>
-      <div class="project-card" data-category="building">
+      <div class="project-card" data-category="villa">
         <div class="project-img-wrapper">
           <img
-            src="https://images.unsplash.com/photo-1487958449943-2429e8be8625?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
-            alt="Ocean Museum Italy" class="project-img" />
+            src="assets/images/projects/parra/parra-4.jpg"
+            alt="Parra Villa" class="project-img" />
         </div>
         <div class="project-info">
-          <div class="project-title">Ocean Museum<br>Italy</div>
-          <a href="#" class="project-link">See project <span class="arrow">&rarr;</span></a>
+          <div class="project-title">Parra Villa</div>
+          <a href="/project?project=parra" target="_blank" class="project-link">See project <span class="arrow">&rarr;</span></a>
         </div>
       </div>
-      <div class="project-card" data-category="building interior">
+      <div class="project-card" data-category="upcoming">
         <div class="project-img-wrapper">
           <img
-            src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
-            alt="Milko Co-Working Building" class="project-img" />
+            src="assets/images/projects/sernabatim/sernabatim-exterior-6.jpg"
+            alt="Sernabatim Villa" class="project-img" />
         </div>
         <div class="project-info">
-          <div class="project-title">Milko Co-Working<br>Building</div>
-          <a href="#" class="project-link">See project <span class="arrow">&rarr;</span></a>
-        </div>
-      </div>
-      <div class="project-card" data-category="interior">
-        <div class="project-img-wrapper">
-          <img
-            src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
-            alt="Wooden Horizontal Villa" class="project-img" />
-        </div>
-        <div class="project-info">
-          <div class="project-title">Wooden Horizontal<br>Villa</div>
-          <a href="#" class="project-link">See project <span class="arrow">&rarr;</span></a>
-        </div>
-      </div>
-      <div class="project-card" data-category="building">
-        <div class="project-img-wrapper">
-          <img
-            src="https://images.unsplash.com/photo-1613545325278-f24b0cae1224?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
-            alt="Sky Bridge Complex" class="project-img" />
-        </div>
-        <div class="project-info">
-          <div class="project-title">Sky Bridge<br>Complex</div>
-          <a href="#" class="project-link">See project <span class="arrow">&rarr;</span></a>
+          <div class="project-title">Sernabatim Villa</div>
+          <a href="/project?project=sernabatim" target="_blank" class="project-link">See project <span class="arrow">&rarr;</span></a>
         </div>
       </div>
       <div class="project-card" data-category="interior">
         <div class="project-img-wrapper">
           <img
-            src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
-            alt="Luxury Interior Design" class="project-img" />
+            src="assets/images/projects/vizstar/vizstar-5.jpg"
+            alt="Vizstar Office" class="project-img" />
         </div>
         <div class="project-info">
-          <div class="project-title">Luxury Interior<br>Design Studio</div>
-          <a href="#" class="project-link">See project <span class="arrow">&rarr;</span></a>
+          <div class="project-title">Vizstar Office</div>
+          <a href="/project?project=vizstar" target="_blank" class="project-link">See project <span class="arrow">&rarr;</span></a>
         </div>
       </div>
-      <div class="project-card" data-category="building interior">
+      <div class="project-card" data-category="villa">
         <div class="project-img-wrapper">
           <img
-            src="https://images.unsplash.com/photo-1511818966892-d7d671e672a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
-            alt="Glass Pavilion Mall" class="project-img" />
+            src="assets/images/projects/sangolda/sangolda.jpg"
+            alt="Sangolda Villa" class="project-img" />
         </div>
         <div class="project-info">
-          <div class="project-title">Glass Pavilion<br>Shopping Mall</div>
-          <a href="#" class="project-link">See project <span class="arrow">&rarr;</span></a>
-        </div>
-      </div>
-      <div class="project-card" data-category="building">
-        <div class="project-img-wrapper">
-          <img
-            src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
-            alt="Neo Corporate Tower" class="project-img" />
-        </div>
-        <div class="project-info">
-          <div class="project-title">Neo Corporate<br>Tower</div>
-          <a href="#" class="project-link">See project <span class="arrow">&rarr;</span></a>
+          <div class="project-title">Sangolda Villa</div>
+          <a href="/project?project=sangolda" target="_blank" class="project-link">See project <span class="arrow">&rarr;</span></a>
         </div>
       </div>
     </div>

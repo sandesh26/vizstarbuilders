@@ -15,9 +15,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    loadHTML("header-placeholder", "components/header.html");
-    loadHTML("slide-menu-placeholder", "components/slide-menu.html");
-    loadHTML("footer-placeholder", "components/footer.html");
+  // use root-relative paths so component requests don't resolve under /project/slug
+  loadHTML("header-placeholder", "/components/header.html");
+  loadHTML("slide-menu-placeholder", "/components/slide-menu.html");
+  loadHTML("footer-placeholder", "/components/footer.html");
 
   // Set dynamic year in copyright
   const currentYearElement = document.getElementById('currentYear');

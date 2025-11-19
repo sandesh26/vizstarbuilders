@@ -5,7 +5,7 @@
 
 (function () {
   const DATA_URL = '/assets/data/projects.json';
-  const PLACEHOLDER = 'assets/images/placeholder.jpg';
+  const PLACEHOLDER = '/assets/images/placeholder.jpg';
 
   function qs(sel, root = document) { return root.querySelector(sel); }
   function qsa(sel, root = document) { return Array.from((root || document).querySelectorAll(sel)); }
@@ -57,7 +57,15 @@
 
   // State
   let currentIndex = 0;
-  let images = qsa('.project-thumbnail').map(t => ({ src: t.src, alt: t.alt }));
+  // normalize a src from JSON or DOM to root-relative if necessary
+  function normalizeSrc(s){
+    if(!s) return s;
+    if(typeof s !== 'string') return s;
+    if(s.indexOf('http://') === 0 || s.indexOf('https://') === 0 || s.indexOf('/') === 0) return s;
+    return '/' + s.replace(/^\/+/, '');
+  }
+
+  let images = qsa('.project-thumbnail').map(t => ({ src: normalizeSrc(t.getAttribute('src') || t.src), alt: t.alt }));
 
   function setImage(index) {
     if (!images || !images.length) return;
@@ -281,15 +289,15 @@
     if (!project) project = projects[0];
 
     // If DOM already has thumbnails, override images array with JSON-provided list so sets use same ordering
-    if (project && Array.isArray(project.images) && project.images.length) {
-      images = project.images.map(i => ({ src: i.src, alt: i.alt || '' }));
+  if (project && Array.isArray(project.images) && project.images.length) {
+  images = project.images.map(i => ({ src: normalizeSrc(i.src), alt: i.alt || '' }));
 
       // If the DOM did not render thumbnails server-side, build them now
       if (!qsa('.project-thumbnail').length && thumbnailStrip) {
         thumbnailStrip.innerHTML = '';
         project.images.forEach((img, idx) => {
           const t = document.createElement('img');
-          t.src = img.src;
+          t.src = normalizeSrc(img.src);
           t.alt = img.alt || `Thumbnail ${idx + 1}`;
           t.className = 'project-thumbnail';
           t.setAttribute('data-idx', idx);

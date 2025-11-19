@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us | Vizstar Builders</title>
+    <link rel="stylesheet" href="assets/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+
+<body>
+    <!-- Header Component Placeholder -->
+    <div id="header-placeholder"></div>
+    
+    <main>
+        <div class="contact-main-title fade-in">Let's Build Something Great Together</div>
+        <div class="contact-map scale-in delay-200">
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d7689.625353006377!2d73.833284!3d15.494505000000002!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bbfc1870bd62f33%3A0x6f779ece0ea56530!2sGera&#39;s%20Imperium%20Star!5e0!3m2!1sen!2sin!4v1758826154572!5m2!1sen!2sin"
+                width="1200" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+        <section class="contact-card-section">
+            <div class="contact-card-address-row contact-card-address-full slide-up delay-300">
+                <div class="contact-side-label classy-label fade-in-left delay-400">KEEP IN TOUCH</div>
+                <div class="contact-info-block classy-info">
+                    <h3 class="contact-info-reveal delay-500">Vizstar Builders & Realtors OPC Pvt Ltd</h3>
+                    <address class="contact-info-reveal delay-600">
+                        Office No 240, Second Floor <br>Gera Star - Patto, Panjim<br>Goa - 403001
+                    </address>
+                    <div class="contact-info-row contact-info-reveal delay-700">
+                        <span class="contact-label">Email:</span>
+                        <a href="mailto:info@vizstar.co" class="contact-email">contact@vizstarbuilders.com</a>
+                    </div>
+                </div>
+                <div class="contact-info-block classy-info">
+                    <div class="contact-phone contact-info-reveal delay-500">+91-98231 72025</div>
+                    <div class="contact-label contact-info-reveal delay-600">Work Hours</div>
+                    <div class="contact-hours contact-info-reveal delay-700">Monday - Saturday  : 09:00 AM - 06:00 PM<br>Sunday Closed</div>
+                    <div class="contact-label contact-info-reveal delay-800">Follow us</div>
+                    <div class="contact-follow contact-info-reveal delay-900">
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section>
+            <div class="contact-card-form-row contact-form-flex fade-in-right delay-400">
+                <div class="contact-side-label classy-label slide-up delay-500">MESSAGE US</div>
+                <div class="contact-form-block classy-form" style="position: relative;">
+                    <form class="contact-form" autocomplete="off">
+                        <div class="contact-form-row">
+                            <input type="text" name="name" placeholder="Name*" required class="fade-in delay-600">
+                            <input type="email" name="email" placeholder="Email*" required class="fade-in delay-700">
+                            <input type="text" name="subject" placeholder="Subject (Optional)" class="fade-in delay-800">
+                        </div>
+                        <textarea name="message" placeholder="Message*" required class="fade-in delay-900"></textarea>
+                        <button type="submit" class="scale-in delay-1000">SEND MESSAGE</button>
+                    </form>
+                    <div class="form-loading-bar"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Professional Contact Page Animations
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // 1. Intersection Observer for scroll-triggered animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        
+                        // Special animations for specific elements
+                        if (entry.target.classList.contains('contact-main-title')) {
+                            setTimeout(() => {
+                                entry.target.classList.add('animate');
+                            }, 800);
+                        }
+                        
+                        if (entry.target.classList.contains('contact-map')) {
+                            setTimeout(() => {
+                                entry.target.classList.add('animate');
+                            }, 1000);
+                        }
+                    }
+                });
+            }, observerOptions);
+
+            // Observe all animated elements
+            const animatedElements = document.querySelectorAll('.fade-in, .fade-in-left, .fade-in-right, .scale-in, .slide-up, .contact-info-reveal');
+            animatedElements.forEach(el => observer.observe(el));
+
+            // 2. Form submission animation
+            const form = document.querySelector('.contact-form');
+            const loadingBar = document.querySelector('.form-loading-bar');
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Animate loading bar
+                loadingBar.classList.add('animate');
+                
+                // Simulate form processing
+                setTimeout(() => {
+                    loadingBar.style.background = 'linear-gradient(90deg, #4CAF50, #45a049)';
+                    
+                    // Show success message
+                    setTimeout(() => {
+                        alert('Message sent successfully! We\'ll get back to you soon.');
+                        form.reset();
+                        loadingBar.classList.remove('animate');
+                        loadingBar.style.background = 'linear-gradient(90deg, #e6e600, #f0f030)';
+                    }, 500);
+                }, 2000);
+            });
+
+            // 3. Enhanced input focus effects
+            const inputs = document.querySelectorAll('.contact-form input, .contact-form textarea');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.style.transform = 'translateY(-2px)';
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.parentElement.style.transform = 'translateY(0)';
+                });
+            });
+
+            // 4. Sequential input reveal on page load
+            setTimeout(() => {
+                inputs.forEach((input, index) => {
+                    setTimeout(() => {
+                        input.style.transform = 'translateX(0)';
+                        input.style.opacity = '1';
+                    }, index * 100);
+                });
+            }, 1500);
+
+            // 5. Social icons staggered hover effects
+            const socialIcons = document.querySelectorAll('.contact-follow a');
+            socialIcons.forEach((icon, index) => {
+                icon.addEventListener('mouseenter', function() {
+                    // Create ripple effect
+                    this.style.animationDelay = `${index * 0.1}s`;
+                });
+            });
+
+            // 6. Map interaction enhancement
+            const mapContainer = document.querySelector('.contact-map');
+            mapContainer.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.02)';
+                this.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+            });
+            
+            mapContainer.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+            });
+
+            // 7. Contact cards parallax effect
+            window.addEventListener('scroll', function() {
+                const scrolled = window.pageYOffset;
+                const contactCards = document.querySelectorAll('.contact-card-address-row, .contact-card-form-row');
+                
+                contactCards.forEach((card, index) => {
+                    const speed = 0.05 + (index * 0.02);
+                    const yPos = -(scrolled * speed);
+                    card.style.transform = `translateY(${yPos}px)`;
+                });
+            });
+
+            // 8. Progressive reveal animation for contact info
+            const contactInfoElements = document.querySelectorAll('.contact-info-reveal');
+            const infoObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.classList.add('visible');
+                        }, parseInt(entry.target.classList.toString().match(/delay-(\d+)/)?.[1]) || 0);
+                    }
+                });
+            }, { threshold: 0.2 });
+
+            contactInfoElements.forEach(el => infoObserver.observe(el));
+
+            // 9. Button press animation
+            const submitButton = document.querySelector('.contact-form button');
+            submitButton.addEventListener('mousedown', function() {
+                this.style.transform = 'translateY(-2px) scale(0.98)';
+            });
+            
+            submitButton.addEventListener('mouseup', function() {
+                this.style.transform = 'translateY(-2px) scale(1)';
+            });
+
+            // 10. Initial page load animation sequence
+            setTimeout(() => {
+                document.querySelector('.contact-main-title').classList.add('visible');
+            }, 200);
+
+            setTimeout(() => {
+                document.querySelector('.contact-map').classList.add('visible');
+            }, 600);
+
+            setTimeout(() => {
+                document.querySelector('.contact-card-address-row').classList.add('visible');
+            }, 1000);
+
+            setTimeout(() => {
+                document.querySelector('.contact-card-form-row').classList.add('visible');
+            }, 1400);
+
+        });
+
+        // Additional CSS modifications for delay classes
+        const style = document.createElement('style');
+        style.textContent = `
+            .delay-1000 { transition-delay: 1s; }
+            .contact-form input, .contact-form textarea {
+                opacity: 0;
+                transform: translateX(-20px);
+                transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+
+    <!-- Slide Menu Component Placeholder -->
+    <div id="slide-menu-placeholder"></div>
+    
+    <!-- Footer Component Placeholder -->
+    <div id="footer-placeholder"></div>
+
+    <script src="assets/main.js"></script>
+</body>
+
+</html>

@@ -357,6 +357,8 @@ $metaImage = $initialImage;
             filter: grayscale(0.5);
             border-radius: 4px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            pointer-events: auto;
+            z-index: 30;
         }
 
         .project-thumbnail:hover {
