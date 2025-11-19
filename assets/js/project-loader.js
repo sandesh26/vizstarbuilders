@@ -121,6 +121,28 @@
       });
     });
 
+    // Delegated click handler on the thumbnail strip — this is resilient if thumbnails
+    // are (re)rendered after wiring (avoids missing listeners). We guard with a flag
+    // so we don't attach multiple handlers on repeated wireUI calls.
+    if (thumbnailStrip && !thumbnailStrip.dataset.bound) {
+      thumbnailStrip.addEventListener('click', (ev) => {
+        const tgt = ev.target.closest && ev.target.closest('.project-thumbnail');
+        if (!tgt) return;
+        // Determine index: prefer explicit data-idx, fallback to node list index
+        const idxAttr = tgt.getAttribute('data-idx');
+        let idx = typeof idxAttr === 'string' && idxAttr !== null ? parseInt(idxAttr, 10) : NaN;
+        if (Number.isNaN(idx)) {
+          const list = qsa('.project-thumbnail');
+          idx = list.indexOf(tgt);
+        }
+        if (idx >= 0) {
+          setImage(idx);
+          restartAutoSlide();
+        }
+      }, false);
+      thumbnailStrip.dataset.bound = '1';
+    }
+
     // arrows
     if (leftArrow) leftArrow.addEventListener('click', () => {
       prevImage();
@@ -392,5 +414,58 @@
   if (mainContent) {
     mainContent.classList.add('expanded');
   }
+
+  // Fullscreen controls wiring
+  (function wireFullscreen() {
+    const fsBtn = qs('.project-fullscreen-btn');
+    const fsExitBtn = qs('.project-exit-fullscreen-btn');
+    const bgContainer = qs('.project-bg-container');
+
+    if (!bgContainer) return;
+
+    function enterFullscreen() {
+      // prefer standard API, fall back to webkit where needed
+      try {
+        if (bgContainer.requestFullscreen) return bgContainer.requestFullscreen();
+        if (bgContainer.webkitRequestFullscreen) return bgContainer.webkitRequestFullscreen();
+        if (bgContainer.msRequestFullscreen) return bgContainer.msRequestFullscreen();
+      } catch (e) {
+        console.warn('Fullscreen request failed', e);
+      }
+    }
+
+    function exitFullscreen() {
+      try {
+        if (document.exitFullscreen) return document.exitFullscreen();
+        if (document.webkitExitFullscreen) return document.webkitExitFullscreen();
+        if (document.msExitFullscreen) return document.msExitFullscreen();
+      } catch (e) {
+        console.warn('Exit fullscreen failed', e);
+      }
+    }
+
+  if (fsBtn) fsBtn.addEventListener('click', (ev) => { ev.preventDefault(); enterFullscreen(); });
+  if (fsExitBtn) fsExitBtn.addEventListener('click', (ev) => { ev.preventDefault(); exitFullscreen(); });
+
+  // Fullscreen-side navigation arrows (these sit inside the bg container so they're visible in fullscreen)
+  const fsLeft = qs('.project-fs-arrow.left');
+  const fsRight = qs('.project-fs-arrow.right');
+  if (fsLeft) fsLeft.addEventListener('click', (ev) => { ev.preventDefault(); prevImage(); restartAutoSlide(); });
+  if (fsRight) fsRight.addEventListener('click', (ev) => { ev.preventDefault(); nextImage(); restartAutoSlide(); });
+
+    // Keep UI in sync when fullscreen is toggled via ESC or other means
+    document.addEventListener('fullscreenchange', () => {
+      const isFS = !!document.fullscreenElement;
+      document.body.classList.toggle('in-fullscreen', isFS);
+      // when exiting fullscreen, ensure auto-slide resumes
+      if (!isFS) restartAutoSlide();
+    });
+    // also support webkit prefixed event
+    document.addEventListener('webkitfullscreenchange', () => {
+      const isFS = !!(document.webkitFullscreenElement || document.fullscreenElement);
+      document.body.classList.toggle('in-fullscreen', isFS);
+      if (!isFS) restartAutoSlide();
+    });
+  })();
 
 })();

@@ -1,0 +1,33 @@
+# Apache configuration for Vizstar Builders
+# - Enables pretty project URLs (e.g. /project/sernabatim -> project.php?project=sernabatim)
+# - Falls back to router.php for other front-controller behavior used during local development
+# - Adds a few safe headers and disables directory listings
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # Don't rewrite requests for existing files or directories
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # Pretty project URLs: /project/slug  -> project.php?project=slug
+    RewriteRule ^project/([^/]+)/?$ /project.php?project=$1 [L,QSA]
+
+    # Fallback: send remaining requests to router.php (used by the project for pretty routing)
+    RewriteRule ^(.*)$ /router.php [L,QSA]
+</IfModule>
+
+<IfModule mod_headers.c>
+    # Basic security headers
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Referrer-Policy "no-referrer-when-downgrade"
+    Header always set X-XSS-Protection "1; mode=block"
+    # HSTS only when served over HTTPS in production. Uncomment if you serve over HTTPS.
+    # Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+</IfModule>
+
+# Disable directory listings
+Options -Indexes

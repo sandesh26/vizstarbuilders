@@ -19,7 +19,7 @@ if ($requested) {
 if (!$project && count($projects)) $project = $projects[0];
 
 // Fallback values
-$title = $project['title'] ?? 'Project';
+$title = ($project['title'] ?? 'Project') . ' | Vizstar Builders';
 $description = $project['description'] ?? '';
 $coverIndex = isset($project['coverIndex']) ? (int)$project['coverIndex'] : 0;
 $images = $project['images'] ?? [];
@@ -66,6 +66,7 @@ $metaImage = $initialImage;
             min-height: 100vh;
             position: relative;
             overflow: hidden;
+            padding-bottom: 140px; /* reserve space so thumbnails placed below image are visible */
         }
 
         .project-bg-container {
@@ -75,7 +76,9 @@ $metaImage = $initialImage;
             right: 40px;
             width: calc(100vw - 80px);
             height: calc(100vh - 80px);
-            z-index: 5;
+            /* make sure thumbnails (inside this container) are above the info card
+               and other UI elements so they remain clickable */
+            z-index: 35;
         }
 
         .project-bg {
@@ -300,20 +303,19 @@ $metaImage = $initialImage;
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(255, 255, 255, 0.9);
+            background: transparent;
             border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
+            width: auto;
+            height: auto;
+            padding: 8px 12px;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
-            color: #1a1a1a;
+            font-size: 28px;
+            color: #fff;
             cursor: pointer;
             z-index: 15;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+            transition: color 0.2s ease, transform 0.12s ease;
         }
 
         .project-arrow:hover {
@@ -336,14 +338,20 @@ $metaImage = $initialImage;
 
         .project-thumbnail-strip {
             position: absolute;
-            bottom: 30px;
-            right: 30px;
+            left: 50%;
+            bottom: -86px; /* place below the main image container */
+            transform: translateX(-50%);
             display: flex;
-            gap: 8px;
+            gap: 10px;
             z-index: 20;
-            max-width: calc(100% - 60px);
-            flex-wrap: wrap;
-            justify-content: flex-end;
+            max-width: 100%;
+            overflow-x: auto;
+            padding: 8px 12px;
+            background: transparent;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+            -webkit-overflow-scrolling: touch;
         }
 
         .project-thumbnail {
@@ -409,11 +417,15 @@ $metaImage = $initialImage;
             }
 
             .project-thumbnail-strip {
-                bottom: 15px;
-                right: 15px;
-                max-width: calc(100% - 30px);
-                gap: 6px;
-                display: none; /* Hide thumbnails on mobile */
+                position: static;
+                transform: none;
+                display: flex; /* show thumbnails under image on mobile */
+                margin: 12px auto 0 auto;
+                bottom: auto;
+                right: auto;
+                max-width: 95%;
+                gap: 8px;
+                overflow-x: auto;
             }
 
             .project-thumbnail {
@@ -429,6 +441,68 @@ $metaImage = $initialImage;
                 transform: scale(1.1);
             }
         }
+
+            /* Fullscreen controls */
+            .project-fullscreen-btn,
+            .project-exit-fullscreen-btn {
+                position: absolute;
+                top: 12px;
+                right: 12px;
+                width: 38px;
+                height: 38px;
+                border: none;
+                border-radius: 50%;
+                background: rgba(255,255,255,0.92);
+                box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                z-index: 60;
+                font-size: 14px;
+                color: #222;
+            }
+
+            .project-exit-fullscreen-btn { display: none; }
+
+            /* When in fullscreen, toggle which control is visible */
+            body.in-fullscreen .project-fullscreen-btn { display: none; }
+            body.in-fullscreen .project-exit-fullscreen-btn { display: flex; }
+
+            /* Make fullscreen image contain within viewport (no cropping) */
+            body.in-fullscreen {
+                background: #000;
+            }
+            body.in-fullscreen .project-bg {
+                object-fit: contain;
+                background: #000;
+            }
+
+            /* Fullscreen-side navigation arrows (visible in fullscreen, and on hover in normal view) */
+            .project-fs-arrow {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                background: transparent;
+                border: none;
+                padding: 6px 10px;
+                display: none;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                z-index: 58;
+                font-size: 28px;
+                color: #fff;
+            }
+
+            .project-fs-arrow.left { left: 12px; }
+            .project-fs-arrow.right { right: 12px; }
+
+            .project-fs-arrow:hover { transform: translateY(-50%) scale(1.03); }
+
+            /* show on hover in normal view, always show in fullscreen */
+            .project-bg-container:hover .project-fs-arrow { display: flex; }
+            body.in-fullscreen .project-fs-arrow { display: flex; }
     </style>
 </head>
 
@@ -437,10 +511,25 @@ $metaImage = $initialImage;
 
     <div class="project-bg-container">
         <img class="project-bg" src="<?php echo h($initialImage); ?>" alt="<?php echo h($initialAlt); ?>" />
+        <button class="project-fullscreen-btn" aria-label="Enter full screen" title="Full screen"><i class="fas fa-expand"></i></button>
+        <button class="project-exit-fullscreen-btn" aria-label="Exit full screen" title="Exit full screen"><i class="fas fa-compress"></i></button>
+    <button class="project-fs-arrow left" aria-label="Previous image" title="Previous">&lt;</button>
+    <button class="project-fs-arrow right" aria-label="Next image" title="Next">&gt;</button>
+        <div class="project-thumbnail-strip">
+            <?php
+            // render thumbnails server-side for SEO and immediate layout
+            foreach ($images as $i => $img) {
+                $src = $img['src'] ?? 'assets/images/placeholder.jpg';
+                $alt = $img['alt'] ?? "Thumbnail " . ($i + 1);
+                $active = ($i === $coverIndex) ? ' active' : '';
+                echo '<img src="' . h($src) . '" alt="' . h($alt) . '" class="project-thumbnail' . $active . '" data-idx="' . $i . '">';
+            }
+            ?>
+        </div>
     </div>
 
     <div class="project-main-content expanded">
-        <button class="project-arrow left" aria-label="Previous Project"><i class="fas fa-chevron-left"></i></button>
+    <button class="project-arrow left" aria-label="Previous Project">&lt;</button>
         <div class="project-info-card">
             <button class="project-close-btn" aria-label="Close project information" title="Close">
                 <i class="fas fa-times"></i>
@@ -469,19 +558,9 @@ $metaImage = $initialImage;
                 ?>
             </div>
         </div>
-        <button class="project-arrow right" aria-label="Next Project"><i class="fas fa-chevron-right"></i></button>
+    <button class="project-arrow right" aria-label="Next Project">&gt;</button>
 
-        <div class="project-thumbnail-strip">
-            <?php
-            // render thumbnails server-side for SEO and immediate layout
-            foreach ($images as $i => $img) {
-                $src = $img['src'] ?? 'assets/images/placeholder.jpg';
-                $alt = $img['alt'] ?? "Thumbnail " . ($i + 1);
-                $active = ($i === $coverIndex) ? ' active' : '';
-                echo '<img src="' . h($src) . '" alt="' . h($alt) . '" class="project-thumbnail' . $active . '" data-idx="' . $i . '">';
-            }
-            ?>
-        </div>
+        
     </div>
 
     <div id="slide-menu-placeholder"></div>

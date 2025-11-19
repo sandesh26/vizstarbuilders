@@ -124,7 +124,7 @@ $htmlBody .= '        <div class="item"><strong>Subject:</strong> ' . $escapedSu
 $htmlBody .= '      </div>' . "\n";
 $htmlBody .= '      <div class="message">' . $escapedMessage . '</div>' . "\n";
 $htmlBody .= '    </div>' . "\n";
-$htmlBody .= '    <div class="footer">This email was sent from: ' . htmlspecialchars($_SERVER['HTTP_HOST'] ?? 'unknown') . '. Replying to this message will send a reply to the visitor.' . "</div>" . "\n";
+$htmlBody .= '    <div class="footer">This email was sent from: ' . htmlspecialchars($_SERVER['HTTP_HOST'] ?? 'unknown') . "</div>" . "\n";
 $htmlBody .= '  </div>' . "\n";
 $htmlBody .= '</body>' . "\n";
 $htmlBody .= '</html>' . "\n";

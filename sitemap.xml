@@ -1,20 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<url>
-<loc>http://www.gulliblegames.com/</loc>
-</url>
-<url>
-<loc>http://www.gulliblegames.com/game.php</loc>
-</url>
-<url>
-<loc>http://www.gulliblegames.com/footer.html</loc>
-</url>
-<url>
-<loc>http://www.gulliblegames.com/index.html</loc>
-</url>
-<url>
-<loc>http://www.gulliblegames.com/privacy-policy.html</loc>
-</url>
-<url>
-<loc>http://www.gulliblegames.com/terms-and-conditions.html</loc>
-</url>
+	<!-- Primary site pages -->
+	<url>
+		<loc>http://www.vizstarbuilders.com/</loc>
+		<lastmod>2025-11-19</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>1.0</priority>
+	</url>
+	<url>
+		<loc>http://www.vizstarbuilders.com/index.html</loc>
+		<lastmod>2025-11-19</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.9</priority>
+	</url>
+	<url>
+		<loc>http://www.vizstarbuilders.com/about.html</loc>
+		<lastmod>2025-11-19</lastmod>
+		<changefreq>monthly</changefreq>
+		<priority>0.6</priority>
+	</url>
+	<url>
+		<loc>http://www.vizstarbuilders.com/contact.html</loc>
+		<lastmod>2025-11-19</lastmod>
+		<changefreq>monthly</changefreq>
+		<priority>0.6</priority>
+	</url>
+	<url>
+		<loc>http://www.vizstarbuilders.com/all-projects.html</loc>
+		<lastmod>2025-11-19</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.8</priority>
+	</url>
+	<url>
+		<loc>http://www.vizstarbuilders.com/privacy-policy.html</loc>
+		<lastmod>2025-11-19</lastmod>
+		<changefreq>yearly</changefreq>
+		<priority>0.2</priority>
+	</url>
+	<url>
+		<loc>http://www.vizstarbuilders.com/terms-and-conditions.html</loc>
+		<lastmod>2025-11-19</lastmod>
+		<changefreq>yearly</changefreq>
+		<priority>0.2</priority>
+	</url>
+
+	<!-- Project pages (auto-generated from projects.json) -->
+	<url>
+		<loc>http://www.vizstarbuilders.com/project/mandrem</loc>
+		<lastmod>2025-11-19</lastmod>
+		<priority>0.7</priority>
+	</url>
+	<url>
+		<loc>http://www.vizstarbuilders.com/project/parra</loc>
+		<lastmod>2025-11-19</lastmod>
+		<priority>0.7</priority>
+	</url>
+	<url>
+		<loc>http://www.vizstarbuilders.com/project/sangolda</loc>
+		<lastmod>2025-11-19</lastmod>
+		<priority>0.7</priority>
+	</url>
+	<url>
+		<loc>http://www.vizstarbuilders.com/project/sernabatim</loc>
+		<lastmod>2025-11-19</lastmod>
+		<priority>0.7</priority>
+	</url>
+	<url>
+		<loc>http://www.vizstarbuilders.com/project/vizstar</loc>
+		<lastmod>2025-11-19</lastmod>
+		<priority>0.7</priority>
+	</url>
+	<url>
+		<loc>http://www.vizstarbuilders.com/project/assagao</loc>
+		<lastmod>2025-11-19</lastmod>
+		<priority>0.7</priority>
+	</url>
+	<url>
+		<loc>http://www.vizstarbuilders.com/project/honda</loc>
+		<lastmod>2025-11-19</lastmod>
+		<priority>0.7</priority>
+	</url>
+	<url>
+		<loc>http://www.vizstarbuilders.com/project/sanquelim</loc>
+		<lastmod>2025-11-19</lastmod>
+		<priority>0.7</priority>
+	</url>
+
 </urlset>
