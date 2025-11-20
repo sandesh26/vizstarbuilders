@@ -25,6 +25,20 @@ function redirect($sent = false, $error = false, $note = '') {
     if ($error) $params['error'] = '1';
     $qs = http_build_query($params);
     $loc = '/contact' . ($qs ? '?' . $qs : '');
+    // If this appears to be an AJAX request, return JSON instead of redirecting
+    $isAjax = false;
+    $accept = $_SERVER['HTTP_ACCEPT'] ?? '';
+    $xrw = $_SERVER['HTTP_X_REQUESTED_WITH'] ?? '';
+    if (stripos($accept, 'application/json') !== false || strtolower($xrw) === 'xmlhttprequest') {
+        $isAjax = true;
+    }
+    if ($isAjax) {
+        $payload = ['sent' => $sent ? 1 : 0, 'error' => $error ? 1 : 0];
+        if ($note) $payload['note'] = $note;
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode($payload);
+        exit;
+    }
     header('Location: ' . $loc);
     exit;
 }

@@ -66,7 +66,6 @@ $metaImage = $initialImage;
             min-height: 100vh;
             position: relative;
             overflow: hidden;
-            padding-bottom: 140px; /* reserve space so thumbnails placed below image are visible */
         }
 
         .project-bg-container {
@@ -76,9 +75,8 @@ $metaImage = $initialImage;
             right: 40px;
             width: calc(100vw - 80px);
             height: calc(100vh - 80px);
-            /* make sure thumbnails (inside this container) are above the info card
-               and other UI elements so they remain clickable */
-            z-index: 35;
+            /* Keep below main content so info card is visible */
+            z-index: 120;
         }
 
         .project-bg {
@@ -99,7 +97,10 @@ $metaImage = $initialImage;
 
         .project-main-content {
             position: relative;
-            z-index: 10;
+            /* place main content above background by default so the info card is visible
+               during normal viewing. When entering fullscreen, .project-bg-container is
+               raised via the .in-fullscreen rule to cover the viewport. */
+            z-index: 200;
             width: 100vw;
             height: 100vh;
             display: flex;
@@ -109,6 +110,13 @@ $metaImage = $initialImage;
             padding-left: 8%;
             padding-top: 80px;
             transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            /* Allow clicks to pass through to elements below in the area not occupied by children */
+            pointer-events: none;
+        }
+
+        .project-main-content > * {
+            /* Re-enable pointer events for children */
+            pointer-events: auto;
         }
 
         .project-main-content.expanded {
@@ -322,6 +330,7 @@ $metaImage = $initialImage;
             background: rgba(255, 255, 255, 1);
             transform: translateY(-50%) scale(1.1);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+            color: #222;
         }
 
         .project-arrow:active {
@@ -336,115 +345,14 @@ $metaImage = $initialImage;
             right: 40px;
         }
 
-        .project-thumbnail-strip {
-            position: absolute;
-            left: 50%;
-            bottom: -86px; /* place below the main image container */
-            transform: translateX(-50%);
-            display: flex;
-            gap: 10px;
-            z-index: 20;
-            max-width: 100%;
-            overflow-x: auto;
-            padding: 8px 12px;
-            background: transparent;
-            justify-content: center;
-            align-items: center;
-            border-radius: 8px;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .project-thumbnail {
-            width: 60px;
-            height: 40px;
-            object-fit: cover;
-            cursor: pointer;
-            opacity: 0.6;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 2px solid transparent;
-            filter: grayscale(0.5);
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            pointer-events: auto;
-            z-index: 30;
-        }
-
-        .project-thumbnail:hover {
-            opacity: 0.9;
-            transform: translateY(-2px) scale(1.05);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            filter: grayscale(0);
-            border-color: rgba(255, 255, 255, 0.6);
-        }
-
-        .project-thumbnail.active {
-            opacity: 1;
-            border-color: rgba(255, 255, 255, 0.8);
-            filter: grayscale(0);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-            transform: scale(1.1);
-        }
-
-        @media (max-width: 768px) {
-            .project-bg-container {
-                top: 60px;
-                left: 10px;
-                right: 10px;
-                width: calc(100vw - 20px);
-                height: calc(100vh - 60px);
-            }
-
-            .project-main-content {
-                justify-content: center;
-                padding-left: 0;
-                padding-top: 100px;
-                align-items: center;
-            }
-
-            .project-info-card {
-                width: 90vw;
-                max-width: 350px;
-                padding: 30px 25px;
-                transform: translateY(-4vh);
-            }
-
-            .project-arrow.left {
-                left: 15px;
-            }
-
-            .project-arrow.right {
-                right: 15px;
-            }
-
-            .project-thumbnail-strip {
-                position: static;
-                transform: none;
-                display: flex; /* show thumbnails under image on mobile */
-                margin: 12px auto 0 auto;
-                bottom: auto;
-                right: auto;
-                max-width: 95%;
-                gap: 8px;
-                overflow-x: auto;
-            }
-
-            .project-thumbnail {
-                width: 50px;
-                height: 35px;
-            }
-
-            .project-thumbnail:hover {
-                transform: translateY(-1px) scale(1.05);
-            }
-
-            .project-thumbnail.active {
-                transform: scale(1.1);
-            }
-        }
+        /* Thumbnails removed — styles cleared */
 
             /* Fullscreen controls */
             .project-fullscreen-btn,
             .project-exit-fullscreen-btn {
+                /* Use absolute positioning within .project-bg-container so button moves with image.
+                   Place outside the z-index stacking battles by making container create
+                   its own context but keep button on top within it. */
                 position: absolute;
                 top: 12px;
                 right: 12px;
@@ -458,7 +366,8 @@ $metaImage = $initialImage;
                 align-items: center;
                 justify-content: center;
                 cursor: pointer;
-                z-index: 60;
+                /* Ensure clickability with high local z-index */
+                z-index: 10;
                 font-size: 14px;
                 color: #222;
             }
@@ -473,14 +382,56 @@ $metaImage = $initialImage;
             body.in-fullscreen {
                 background: #000;
             }
+            /* When toggled to 'in-fullscreen' ensure the bg container takes over the viewport
+               and is above all other content (native fullscreen may already handle this, but
+               this guarantees the visual stacking when using the CSS fallback or when
+               other elements have high z-index). */
+            body.in-fullscreen .project-bg-container {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                bottom: 0 !important;
+                width: 100vw !important;
+                height: 100vh !important;
+                z-index: 99999 !important;
+            }
             body.in-fullscreen .project-bg {
                 object-fit: contain;
                 background: #000;
+                z-index: 99998;
             }
+
+            /* CSS-based fullscreen fallback when the native API is unavailable */
+            body.fs-fallback {
+                background: #000;
+                overflow: hidden;
+            }
+            body.fs-fallback .project-bg-container {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                width: 100vw;
+                height: 100vh;
+                z-index: 9999;
+            }
+            body.fs-fallback .project-bg {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                background: #000;
+            }
+            body.fs-fallback .project-fs-arrow { display: flex; z-index: 10000; }
+            body.fs-fallback .project-fullscreen-btn { display: none; }
+            body.fs-fallback .project-exit-fullscreen-btn { display: flex; }
 
             /* Fullscreen-side navigation arrows (visible in fullscreen, and on hover in normal view) */
             .project-fs-arrow {
-                position: absolute;
+                /* Fixed so arrows are always above the info card and can be used
+                   even when the background container is below other stacking contexts. */
+                position: fixed;
                 top: 50%;
                 transform: translateY(-50%);
                 background: transparent;
@@ -490,7 +441,7 @@ $metaImage = $initialImage;
                 align-items: center;
                 justify-content: center;
                 cursor: pointer;
-                z-index: 58;
+                z-index: 999998;
                 font-size: 28px;
                 color: #fff;
             }
@@ -500,8 +451,9 @@ $metaImage = $initialImage;
 
             .project-fs-arrow:hover { transform: translateY(-50%) scale(1.03); }
 
-            /* show on hover in normal view, always show in fullscreen */
-            .project-bg-container:hover .project-fs-arrow { display: flex; }
+                /* show on hover in normal view (use general sibling because arrows
+                    are moved outside the container), always show in fullscreen */
+                .project-bg-container:hover ~ .project-fs-arrow { display: flex; }
             body.in-fullscreen .project-fs-arrow { display: flex; }
     </style>
 </head>
@@ -511,22 +463,15 @@ $metaImage = $initialImage;
 
     <div class="project-bg-container">
         <img class="project-bg" src="<?php echo h($initialImage); ?>" alt="<?php echo h($initialAlt); ?>" />
+        
+        <!-- fullscreen controls placed inside .project-bg-container -->
         <button class="project-fullscreen-btn" aria-label="Enter full screen" title="Full screen"><i class="fas fa-expand"></i></button>
         <button class="project-exit-fullscreen-btn" aria-label="Exit full screen" title="Exit full screen"><i class="fas fa-compress"></i></button>
-    <button class="project-fs-arrow left" aria-label="Previous image" title="Previous">&lt;</button>
-    <button class="project-fs-arrow right" aria-label="Next image" title="Next">&gt;</button>
-        <div class="project-thumbnail-strip">
-            <?php
-            // render thumbnails server-side for SEO and immediate layout
-            foreach ($images as $i => $img) {
-                $src = $img['src'] ?? 'assets/images/placeholder.jpg';
-                $alt = $img['alt'] ?? "Thumbnail " . ($i + 1);
-                $active = ($i === $coverIndex) ? ' active' : '';
-                echo '<img src="' . h($src) . '" alt="' . h($alt) . '" class="project-thumbnail' . $active . '" data-idx="' . $i . '">';
-            }
-            ?>
-        </div>
     </div>
+
+    <!-- fullscreen arrows remain outside so they can be shown/hidden independently -->
+    <button class="project-fs-arrow left" aria-label="Previous image" title="Previous">&lt;</button>
+    <!-- <button class="project-fs-arrow right" aria-label="Next image" title="Next">&gt;</button> -->
 
     <div class="project-main-content expanded">
     <button class="project-arrow left" aria-label="Previous Project">&lt;</button>
@@ -563,10 +508,13 @@ $metaImage = $initialImage;
         
     </div>
 
+    <!-- thumbnails are rendered once inside the .project-bg-container -->
+
     <div id="slide-menu-placeholder"></div>
     <div id="footer-placeholder"></div>
 
     <!-- Client-side loader (adds interactions, deep-linking and graceful fallback) -->
+
     <script src="/assets/js/project-loader.js" defer></script>
     <script src="assets/main.js"></script>
 </body>

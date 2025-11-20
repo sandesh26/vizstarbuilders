@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Loader Preview — Vizstar Builders</title>
+  <style>
+    :root{--bg:#fff;--fg:#111}
+    body{font-family:Inter, Poppins, system-ui, -apple-system, sans-serif;margin:0;background:var(--bg);color:var(--fg)}
+    header{padding:20px 28px;border-bottom:1px solid #eee}
+    main{padding:28px}
+    .controls{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+    .controls button{padding:10px 14px;border-radius:8px;border:1px solid #ddd;background:#fafafa;cursor:pointer}
+    .controls button.active{box-shadow:0 6px 18px rgba(0,0,0,0.08);background:#fff;border-color:#ccc}
+    .preview-note{margin:12px 0;color:#666}
+    /* shared loader container style */
+    .loader-overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:2147483646;/* near top */background:rgba(255,255,255,1);transition:opacity .45s ease;}
+    .loader-hidden{opacity:0;pointer-events:none}
+    /* Option specific base styles */
+    .logo-wrap svg{width:140px;height:140px}
+    .kenburns-bg{position:absolute;inset:0;background-size:cover;background-position:center;filter:brightness(.5)}
+    .dots{display:flex;gap:8px;justify-content:center}
+    .dot{width:10px;height:10px;border-radius:50%;background:#fff;opacity:.25}
+    .tile-grid{display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:calc(100vh/4);gap:6px;position:absolute;inset:0}
+    .tile{background:#e6e6e6}
+    .bars{display:flex;gap:10px;align-items:flex-end}
+    .bar{width:14px;background:#111;border-radius:4px}
+    .typo-title{font-weight:700;font-size:28px;letter-spacing:4px}
+    /* reduced-motion safe */
+    @media (prefers-reduced-motion: reduce){
+      .anim{animation:none !important;transition:none !important}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <strong>Loader Preview</strong> — preview all 5 loader options and pick one to implement.
+  </header>
+  <main>
+    <div class="controls" role="tablist" aria-label="Loader options">
+      <button data-option="1" class="active">1 — Logo Reveal</button>
+      <button data-option="2">2 — Ken Burns</button>
+      <button data-option="3">3 — Tile Morph</button>
+      <button data-option="4">4 — 3D Bars</button>
+      <button data-option="5">5 — Typographic</button>
+      <button data-option="6">6 — Logo + Ring</button>
+      <button data-option="7">7 — Typewriter</button>
+      <button data-option="8">8 — Kinetic Letters</button>
+      <button data-option="9">9 — Spinner Logo</button>
+      <button data-option="10">10 — Diagonal Wipe</button>
+    <button data-option="11">11 — Radial Dots</button>
+    <button data-option="12">12 — Curtain Wipe</button>
+    <button data-option="13">13 — Morph Logo</button>
+    <button data-option="14">14 — Skyline Build</button>
+    <button data-option="15">15 — Shimmer Grid</button>
+    <button data-option="16">16 — Rotating Cube</button>
+      <label style="margin-left:8px;align-self:center">Duration:
+        <select id="duration">
+          <option value="3000">3s</option>
+          <option value="3500">3.5s</option>
+          <option value="4000">4s</option>
+        </select>
+      </label>
+      <button id="previewBtn">Preview</button>
+      <button id="stopBtn">Stop</button>
+    </div>
+
+    <p class="preview-note">Click an option then <strong>Preview</strong>. Press <kbd>Esc</kbd> to skip early.</p>
+
+    <section aria-live="polite">
+      <h3>Preview area — the loader will appear as an overlay</h3>
+      <p class="preview-note">This demo injects the loader markup into the page body so you can inspect the DOM, accessibility attributes, and CSS.</p>
+    </section>
+  </main>
+
+<script>
+(function(){
+  const previewBtn = document.getElementById('previewBtn');
+  const stopBtn = document.getElementById('stopBtn');
+  const durationEl = document.getElementById('duration');
+  let activeOption = 1;
+  let activeOverlay = null;
+  let hideTimer = null;
+
+  // option selection UI
+  document.querySelectorAll('.controls button[data-option]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.controls button[data-option]').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      activeOption = parseInt(btn.getAttribute('data-option'),10);
+    });
+  });
+
+  function removeOverlay(){
+    if(!activeOverlay) return;
+    activeOverlay.classList.add('loader-hidden');
+    setTimeout(()=>{ try{ activeOverlay.remove(); }catch(e){} activeOverlay=null; },500);
+    if(hideTimer){ clearTimeout(hideTimer); hideTimer=null; }
+  }
+
+  function inject(html){
+    removeOverlay();
+    const wrap = document.createElement('div');
+    wrap.className='loader-overlay';
+    wrap.innerHTML = html;
+    document.body.appendChild(wrap);
+    // small delay so CSS transitions apply, then return element
+    requestAnimationFrame(()=>{});
+    activeOverlay = wrap;
+    return wrap;
+  }
+
+  // Option implementations
+  function logoLoader(){
+    const svg = `
+      <div class="logo-wrap" aria-hidden="true">
+        <svg viewBox="0 0 100 100"><path id="p" d="M10 80 L50 10 L90 80 Z" fill="none" stroke="#111" stroke-width="2" stroke-linejoin="round"/></svg>
+      </div>
+      <style>
+        .logo-wrap #p{stroke-dasharray:240;stroke-dashoffset:240;transition:stroke-dashoffset 1.2s ease;}
+        .logo-wrap.done #p{stroke-dashoffset:0}
+        .logo-wrap.done svg{animation:logoFill .6s 1.2s forwards}
+        @keyframes logoFill{to{transform:scale(1.03);}}
+      </style>`;
+    const el = inject(svg);
+    // trigger stroke draw
+    setTimeout(()=> el.querySelector('.logo-wrap').classList.add('done'),40);
+    return el;
+  }
+
+  function kenburnsLoader(){
+    const html = `
+      <div class="kenburns" style="position:relative;width:100%;height:100%">
+        <div class="kenburns-bg anim" style="background-image:url('assets/images/placeholder.jpg');animation:kb 4s ease-out forwards"></div>
+        <div style="position:relative;z-index:2;text-align:center;color:#fff"><h2 style="margin:0 0 12px">Vizstar Builders</h2><div class="dots"><span class="dot anim"></span><span class="dot anim" style="animation-delay:.15s"></span><span class="dot anim" style="animation-delay:.3s"></span></div></div>
+      </div>
+      <style>@keyframes kb{to{transform:scale(1.06)}}@keyframes dot{50%{opacity:1;transform:translateY(-6px)}}.dot{animation:dot .9s infinite}</style>`;
+    return inject(html);
+  }
+
+  function tileLoader(){
+    let tiles='';
+    for(let i=0;i<24;i++){ tiles += '<div class="tile anim"></div>'; }
+    const html = `<div class="tile-grid">${tiles}</div><style>.tile{opacity:0;transform:scale(.92) translateY(8px);animation:tileIn .9s ease forwards}.tile:nth-child(odd){animation-delay:.04s}.tile:nth-child(even){animation-delay:.08s}@keyframes tileIn{to{opacity:1;transform:none}}</style>`;
+    return inject(html);
+  }
+
+  function barsLoader(){
+    const html = `<div class="bars"><div class="bar anim" style="height:40px;animation:bar 0.9s infinite ease-in-out"></div><div class="bar anim" style="height:60px;animation:bar 0.9s .12s infinite ease-in-out"></div><div class="bar anim" style="height:48px;animation:bar 0.9s .24s infinite ease-in-out"></div></div><style>@keyframes bar{50%{transform:scaleY(1.45)}}</style>`;
+    const el = inject(html);
+    // add pointer interactive tilt
+    const bars = el.querySelector('.bars');
+    if(bars){ bars.addEventListener('mousemove',e=>{ const x=(e.clientX/window.innerWidth-.5)*8; bars.style.transform = `rotateY(${x}deg)` }); }
+    return el;
+  }
+
+  function typographicLoader(){
+    const html = `<div style="text-align:center"><div class="typo-title" id="typo"></div><div style="height:6px;width:220px;background:#eee;margin:12px auto;border-radius:4px;overflow:hidden"><div id="tbar" style="height:100%;width:0;background:#111;transition:width 3s linear"></div></div></div>`;
+    const el = inject(html);
+    const text = 'VIZSTAR BUILDERS';
+    const out = el.querySelector('#typo');
+    [...text].forEach((ch,i)=> setTimeout(()=> out.textContent += ch, i*70));
+    setTimeout(()=> el.querySelector('#tbar').style.width='100%',20);
+    return el;
+  }
+
+  // --- Additional options (6-10)
+  function logoRingLoader(){
+    const html = `
+      <div style="text-align:center">
+        <svg width="120" height="120" viewBox="0 0 120 120" aria-hidden="true">
+          <circle cx="60" cy="60" r="44" stroke="#e6e6e6" stroke-width="10" fill="none"></circle>
+          <circle id="ring" cx="60" cy="60" r="44" stroke="#111" stroke-width="10" fill="none" stroke-linecap="round" stroke-dasharray="276.46" stroke-dashoffset="276.46" transform="rotate(-90 60 60)"></circle>
+          <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#111" font-size="14">0%</text>
+        </svg>
+      </div>
+      <style>
+        /* nothing here; ring animated via JS */
+      </style>`;
+    const el = inject(html);
+    const ring = el.querySelector('#ring');
+    const text = el.querySelector('text');
+    if(!ring) return el;
+    let start = null;
+    const duration = 3000;
+    function step(ts){
+      if(!start) start = ts;
+      const t = Math.min(1, (ts-start)/duration);
+      const dash = 276.46 * (1 - t);
+      ring.setAttribute('stroke-dashoffset', String(dash));
+      text.textContent = Math.round(t*100) + '%';
+      if(t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+    return el;
+  }
+
+  function typewriterLoader(){
+    const html = `<div style="text-align:center"><div id="tw" style="font-weight:700;font-size:26px;letter-spacing:3px"></div><div style="height:6px;width:200px;background:#eee;margin:12px auto;border-radius:4px;overflow:hidden"><div id="twbar" style="height:100%;width:0;background:#111;transition:width 3s linear"></div></div></div>`;
+    const el = inject(html);
+    const out = el.querySelector('#tw');
+    const text = 'VIZSTAR BUILDERS';
+    [...text].forEach((ch,i)=> setTimeout(()=> out.textContent += ch, i*90));
+    setTimeout(()=> el.querySelector('#twbar').style.width='100%',40);
+    return el;
+  }
+
+  function kineticLettersLoader(){
+    const text = 'V I Z S T A R';
+    const letters = text.split(' ');
+    let html = '<div style="display:flex;gap:8px;align-items:center;justify-content:center">';
+    letters.forEach((l,idx)=> html += `<span class="k" style="display:inline-block;opacity:0;transform:translateY(24px);font-weight:700;font-size:28px">${l}</span>`);
+    html += '</div>';
+    html += `<style>@keyframes kIn{to{opacity:1;transform:none}}.k{animation:kIn .7s ease forwards}</style>`;
+    const el = inject(html);
+    el.querySelectorAll('.k').forEach((elm,i)=> elm.style.animationDelay = (i*0.08)+'s');
+    return el;
+  }
+
+  function spinnerLogoLoader(){
+    const html = `
+      <div style="display:flex;flex-direction:column;align-items:center;gap:12px">
+        <div style="width:100px;height:100px;border-radius:999px;border:6px solid rgba(0,0,0,0.08);display:flex;align-items:center;justify-content:center;animation:spin 1.6s linear infinite">
+          <svg width="44" height="44" viewBox="0 0 100 100"><path d="M10 80 L50 10 L90 80 Z" fill="#111"/></svg>
+        </div>
+        <div style="font-size:13px;color:#666">Loading</div>
+      </div>
+      <style>@keyframes spin{to{transform:rotate(360deg)}}</style>`;
+    return inject(html);
+  }
+
+  function diagonalWipeLoader(){
+    const html = `
+      <div style="position:absolute;inset:0;overflow:hidden">
+        <div id="wipe" style="position:absolute;left:-20%;top:-60%;width:140%;height:220%;background:linear-gradient(120deg,#111 0%,#222 50%,#111 100%);transform:translateX(0) rotate(-14deg);"></div>
+        <div style="position:relative;z-index:2;color:#fff;text-align:center"><svg width="120" height="120" viewBox="0 0 100 100"><path d="M10 80 L50 10 L90 80 Z" fill="#fff"/></svg></div>
+      </div>
+      <style>#wipe{transition:transform 1.1s cubic-bezier(.22,.9,.35,1)}</style>`;
+    const el = inject(html);
+    // animate wipe out after a short delay
+    setTimeout(()=>{ const w = el.querySelector('#wipe'); if(w) w.style.transform = 'translateX(120%) rotate(-14deg)'; },120);
+    return el;
+  }
+
+  // --- Additional options (11-16)
+  function radialDotsLoader(){
+    let dots='';
+    for(let i=0;i<12;i++){ dots += `<div class="r" style="width:10px;height:10px;border-radius:50%;background:#111;position:absolute;left:50%;top:50%;transform-origin:-40px 0;opacity:0;animation:rd 1.4s ${i*0.06}s infinite"></div>`; }
+    const html = `<div style="position:relative;width:160px;height:160px">${dots}</div><style>@keyframes rd{0%{opacity:0;transform:translate(-50%,-50%) rotate(0) scale(.6)}50%{opacity:1;transform:translate(-50%,-50%) rotate(180deg) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) rotate(360deg) scale(.6)}}</style>`;
+    return inject(html);
+  }
+
+  function curtainLoader(){
+    const html = `<div style="position:relative;width:100%;height:100%"><div id="curtain" style="position:absolute;inset:0;background:linear-gradient(90deg,var(--loader-green),#0b6623);transform:translateX(0%);"></div><div style="position:relative;z-index:2;color:#fff;text-align:center"><svg width="80" height="80" viewBox="0 0 100 100"><path d="M10 80 L50 10 L90 80 Z" fill="#fff"/></svg></div></div><style>#curtain{transition:transform 1.4s cubic-bezier(.22,.9,.35,1)}</style>`;
+    const el = inject(html);
+    // animate curtain away after small delay
+    setTimeout(()=>{ const c = el.querySelector('#curtain'); if(c) c.style.transform = 'translateX(110%)'; },120);
+    return el;
+  }
+
+  function morphLogoLoader(){
+    const html = `<div style="display:flex;flex-direction:column;align-items:center;gap:10px"><svg width="120" height="80" viewBox="0 0 120 80"><path id="m1" d="M10 70 L60 10 L110 70 Z" fill="#111"></path></svg><div style="font-size:13px;color:#666">Building…</div></div><style>#m1{transform-origin:60px 40px;animation:morph 2.6s ease-in-out forwards}@keyframes morph{0%{transform:scale(1) rotate(0)}50%{transform:scale(0.92) rotate(-6deg)}100%{transform:scale(1) rotate(0)}}</style>`;
+    return inject(html);
+  }
+
+  function skylineLoader(){
+    const cols = 6; let blocks='';
+    for(let i=0;i<cols;i++){ blocks += `<div style="width:28px;height:${40 + (i%4)*30}px;background:#111;margin:0 8px;transform:translateY(60px);opacity:0;animation:sup .9s ${i*0.12}s forwards"></div>` }
+    const html = `<div style="display:flex;align-items:end;gap:8px">${blocks}</div><style>@keyframes sup{to{transform:none;opacity:1}}</style>`;
+    return inject(html);
+  }
+
+  function shimmerGridLoader(){
+    let cells=''; for(let i=0;i<12;i++) cells += '<div class="sg" style="width:80px;height:60px;background:#eee;border-radius:6px;margin:6px"></div>';
+    const html = `<div style="display:flex;flex-wrap:wrap;justify-content:center;max-width:360px">${cells}</div><style>.sg{background:linear-gradient(90deg,#f3f3f3 0%,#ececec 50%,#f3f3f3 100%);background-size:200% 100%;animation:sh 1.4s infinite}@keyframes sh{to{background-position:-200% 0}}</style>`;
+    return inject(html);
+  }
+
+  function cubeLoader(){
+    const html = `<div style="perspective:600px"><div style="width:80px;height:80px;transform-style:preserve-3d;animation:rot 1.6s linear infinite"><div style="position:absolute;inset:0;background:#111;transform:translateZ(40px)"></div></div></div><style>@keyframes rot{to{transform:rotateX(360deg) rotateY(360deg)}}</style>`;
+    return inject(html);
+  }
+
+  function showSelected(duration){
+    // inject the chosen loader
+    let el;
+    switch(activeOption){
+      case 1: el = logoLoader(); break;
+      case 2: el = kenburnsLoader(); break;
+      case 3: el = tileLoader(); break;
+      case 4: el = barsLoader(); break;
+      case 5: el = typographicLoader(); break;
+      case 6: el = logoRingLoader(); break;
+      case 7: el = typewriterLoader(); break;
+      case 8: el = kineticLettersLoader(); break;
+      case 9: el = spinnerLogoLoader(); break;
+      case 10: el = diagonalWipeLoader(); break;
+      case 11: el = radialDotsLoader(); break;
+      case 12: el = curtainLoader(); break;
+      case 13: el = morphLogoLoader(); break;
+      case 14: el = skylineLoader(); break;
+      case 15: el = shimmerGridLoader(); break;
+      case 16: el = cubeLoader(); break;
+    }
+    // ensure minimum display time and allow Esc to hide early
+    const ms = parseInt(duration||3000,10) || 3000;
+    if(hideTimer) clearTimeout(hideTimer);
+    hideTimer = setTimeout(()=> removeOverlay(), ms);
+  }
+
+  previewBtn.addEventListener('click', ()=>{
+    const ms = parseInt(durationEl.value,10);
+    showSelected(ms);
+  });
+  stopBtn.addEventListener('click', removeOverlay);
+
+  // Esc key to skip
+  document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') removeOverlay(); });
+
+})();
+</script>
+</body>
+</html>

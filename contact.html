@@ -41,16 +41,17 @@
             position: relative;
             margin: -70px auto 40px;
             max-width: 1100px;
-            background: rgba(30,30,30,100);
+            /* alpha should be between 0 and 1 — use 0.95 for a slightly translucent band */
+            background: rgba(30,30,30,0.95);
             color: #fff;
             display: flex;
             gap: 1px;
             box-shadow: 0 6px 30px rgba(0,0,0,0.2);
             z-index: 4;
-            border-radius: 2px;
+            border-radius: 6px;
             overflow: hidden;
         }
-        .contact-band .band-item { flex:1; padding:28px 30px; text-align:center;z-index: 100;; }
+        .contact-band .band-item { flex:1; padding:20px 22px; text-align:center; z-index:100; }
         .band-item i { font-size: 26px; margin-bottom:10px; display:block; color:#d7c08a; }
         .band-item h4 { margin:6px 0 6px; font-size:14px; text-transform:uppercase; letter-spacing:1px; }
         .band-item p { font-size:13px; opacity:0.9; }
@@ -79,6 +80,30 @@
             .contact-band { margin: -40px 16px 24px; }
             .hero-contacts{height:320px}
             .hero-title{font-size:28px}
+        }
+
+        /* Narrow mobile adjustments */
+        @media (max-width:600px) {
+            .contact-band {
+                /* reduce the negative overlap so the band doesn't cover too much of the hero */
+                margin: -28px 12px 18px;
+                flex-direction: column;
+                gap: 0;
+                border-radius: 6px;
+                align-items: center;
+            }
+            .contact-band .band-item {
+                padding: 14px 12px;
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            .band-item i { font-size: 22px; margin-bottom:8px; }
+            .band-item h4 { font-size:13px; }
+            .band-item p { font-size:13px; word-break:break-word; }
+            /* Slightly reduce hero height on very small screens to keep layout compact */
+            .hero-contacts { height: 260px; }
         }
     </style>
 </head>
@@ -125,7 +150,7 @@
                         <input type="email" name="email" placeholder="Your Email*" required>
                     </div>
                     <div style="display:flex; gap:8px;">
-                        <input type="text" name="phone" placeholder="Your Phone*" required>
+                        <input type="tel" name="phone" placeholder="Your Phone*" required inputmode="numeric" pattern="[0-9]{10}" maxlength="10" title="Please enter exactly 10 digits" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 10);">
                         <input type="text" name="subject" placeholder="Subject (optional)">
                     </div>
                     <textarea name="message" rows="6" placeholder="Your Message" required></textarea>
@@ -148,28 +173,102 @@
     <div id="footer-placeholder"></div>
 
     <script>
-        // Show success/error banner when redirected back from contact.php
+        // Handle showing messages and submit the contact form via AJAX (no page reload)
         document.addEventListener('DOMContentLoaded', function(){
-            const params = new URLSearchParams(location.search);
-            const msg = document.createElement('div');
-            msg.id = 'contact-result';
-            msg.style.margin = '12px 0';
-            msg.style.padding = '12px';
-            msg.style.borderRadius = '6px';
-            msg.style.display = 'none';
-            if (params.get('sent') === '1') {
-                msg.textContent = 'Thank you — your message was sent successfully.';
-                msg.style.background = '#e6ffef';
-                msg.style.color = '#065f46';
+            function showContactMessage(type, text) {
+                let msg = document.getElementById('contact-result');
+                if (!msg) {
+                    msg = document.createElement('div');
+                    msg.id = 'contact-result';
+                    msg.style.margin = '12px 0';
+                    msg.style.padding = '12px';
+                    msg.style.borderRadius = '6px';
+                }
+                if (type === 'success') {
+                    msg.style.background = '#e6ffef';
+                    msg.style.color = '#065f46';
+                } else {
+                    msg.style.background = '#fff1f2';
+                    msg.style.color = '#7f1d1d';
+                }
+                msg.textContent = text;
                 msg.style.display = 'block';
-            } else if (params.get('error') === '1') {
-                msg.textContent = 'Sorry — we could not send your message. Please try again later.';
-                msg.style.background = '#fff1f2';
-                msg.style.color = '#7f1d1d';
-                msg.style.display = 'block';
+                const wrap = document.querySelector('.contact-form-wrap');
+                if (wrap) wrap.insertBefore(msg, wrap.firstChild);
             }
-            const wrap = document.querySelector('.contact-form-wrap');
-            if (wrap && msg.style.display === 'block') wrap.insertBefore(msg, wrap.firstChild);
+
+            // If the page was opened with query params (fallback for non-AJAX submissions), show message
+            const params = new URLSearchParams(location.search);
+            if (params.get('sent') === '1') {
+                showContactMessage('success', 'Thank you — your message was sent successfully.');
+            } else if (params.get('error') === '1') {
+                showContactMessage('error', 'Sorry — we could not send your message. Please try again later.');
+            }
+
+            // Intercept form submit and POST via fetch so page does not reload
+            const form = document.querySelector('.contact-form');
+            if (!form) return;
+
+            form.addEventListener('submit', async function (e) {
+                e.preventDefault();
+                const submitBtn = form.querySelector('button[type=submit]');
+                let originalBtnText = '';
+                if (submitBtn) {
+                    originalBtnText = submitBtn.textContent;
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = 'Sending...';
+                }
+
+                try {
+                    const resp = await fetch(form.action, {
+                        method: (form.method || 'POST').toUpperCase(),
+                        body: new FormData(form),
+                        credentials: 'same-origin',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json,text/html'
+                        }
+                    });
+
+                    const contentType = (resp.headers.get('content-type') || '').toLowerCase();
+                    if (contentType.includes('application/json')) {
+                        const json = await resp.json();
+                        if (json && (json.sent == 1 || json.success === true)) {
+                            showContactMessage('success', json.message || 'Thank you — your message was sent successfully.');
+                            form.reset();
+                        } else {
+                            showContactMessage('error', json.message || 'Sorry — we could not send your message. Please try again later.');
+                        }
+                    } else {
+                        // If the server redirected with query params, resp.url will include them
+                        if (resp.url && resp.url.indexOf('sent=1') !== -1) {
+                            showContactMessage('success', 'Thank you — your message was sent successfully.');
+                            form.reset();
+                        } else if (resp.url && resp.url.indexOf('error=1') !== -1) {
+                            showContactMessage('error', 'Sorry — we could not send your message. Please try again later.');
+                        } else if (resp.ok) {
+                            // Try to inspect body for success markers
+                            const text = await resp.text();
+                            if (text.indexOf('Thank you') !== -1 || text.indexOf('sent successfully') !== -1) {
+                                showContactMessage('success', 'Thank you — your message was sent successfully.');
+                                form.reset();
+                            } else {
+                                showContactMessage('error', 'Sorry — we could not send your message. Please try again later.');
+                            }
+                        } else {
+                            showContactMessage('error', 'Sorry — we could not send your message. Please try again later.');
+                        }
+                    }
+                } catch (err) {
+                    console.error('Contact form submission failed:', err);
+                    showContactMessage('error', 'An error occurred while sending — check your internet connection and try again.');
+                } finally {
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = originalBtnText;
+                    }
+                }
+            });
         });
     </script>
     <script src="assets/main.js"></script>

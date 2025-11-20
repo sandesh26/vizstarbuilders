@@ -63,9 +63,13 @@ let currentSlide = 0;
 let autoScrollInterval = null;
 
 function showSlide(idx) {
+  // Defensive: ensure slides exist and idx is in range
+  if (!slides || slides.length === 0) return;
+  if (typeof idx !== 'number' || idx < 0 || idx >= slides.length) idx = 0;
+
   slides.forEach((slide, i) => {
     slide.classList.remove('active', 'prev');
-    dots[i].classList.toggle('active', i === idx);
+    if (dots[i]) dots[i].classList.toggle('active', i === idx);
     // Remove zoom effect from all
     const img = slide.querySelector('img');
     if (img) img.classList.remove('carousel-zoom');
@@ -73,12 +77,12 @@ function showSlide(idx) {
   // Set classes for sliding effect
   slides[idx].classList.add('active');
   if (currentSlide !== idx) {
-    slides[currentSlide].classList.add('prev');
+    if (slides[currentSlide]) slides[currentSlide].classList.add('prev');
     // Add zoom effect to new active image
     const img = slides[idx].querySelector('img');
     if (img) img.classList.add('carousel-zoom');
     setTimeout(() => {
-      slides[currentSlide].classList.remove('prev');
+      if (slides[currentSlide]) slides[currentSlide].classList.remove('prev');
     }, 800); // match transition duration
   } else {
     // Add zoom effect to current image if first load
@@ -88,19 +92,24 @@ function showSlide(idx) {
   currentSlide = idx;
 }
 
-dots.forEach((dot, i) => {
-  dot.addEventListener('click', () => {
-    showSlide(i);
-    resetAutoScroll();
+if (dots && dots.length > 0) {
+  dots.forEach((dot, i) => {
+    dot.addEventListener('click', () => {
+      showSlide(i);
+      resetAutoScroll();
+    });
   });
-});
+}
 
 function autoScrollCarousel() {
+  if (!slides || slides.length === 0) return;
   showSlide((currentSlide + 1) % slides.length);
 }
 
 function resetAutoScroll() {
   if (autoScrollInterval) clearInterval(autoScrollInterval);
+  // Do not start auto-scroll if there are no slides
+  if (!slides || slides.length === 0) return;
   autoScrollInterval = setInterval(autoScrollCarousel, 7000);
 }
 
@@ -183,13 +192,16 @@ function getFilteredProjects(filter) {
 
 function updateDotsVisibility(totalProjects) {
   const dotsContainer = document.querySelector('.projects-dots');
+  if (!dotsContainer) return;
   if (totalProjects <= 4) {
     dotsContainer.style.display = 'none';
-  } else {
-    dotsContainer.style.display = 'flex';
-    const totalPages = Math.ceil(totalProjects / 4);
-    
-    // Update dots based on total pages
+    return;
+  }
+  dotsContainer.style.display = 'flex';
+  const totalPages = Math.ceil(totalProjects / 4);
+  
+  // Update dots based on total pages
+  if (projectsDots && projectsDots.length > 0) {
     projectsDots.forEach((dot, index) => {
       if (index < totalPages) {
         dot.style.display = 'block';
@@ -270,6 +282,26 @@ projectsDots.forEach((dot, index) => {
   });
 });
 
+// Projects prev/next buttons (header controls)
+const projectsPrevBtn = document.getElementById('projectsPrev');
+const projectsNextBtn = document.getElementById('projectsNext');
+
+function goToNextProjects() {
+  const totalPages = Math.ceil(filteredProjects.length / 4);
+  if (currentProjectsPage < totalPages - 1) {
+    showProjectsPage(currentProjectsPage + 1);
+  }
+}
+
+function goToPrevProjects() {
+  if (currentProjectsPage > 0) {
+    showProjectsPage(currentProjectsPage - 1);
+  }
+}
+
+if (projectsNextBtn) projectsNextBtn.addEventListener('click', () => { goToNextProjects(); });
+if (projectsPrevBtn) projectsPrevBtn.addEventListener('click', () => { goToPrevProjects(); });
+
 // Initialize projects display
 window.addEventListener('DOMContentLoaded', function() {
   // Initialize with 'all' filter
@@ -286,16 +318,21 @@ const testimonialsSlider = document.getElementById('testimonialsSlider');
 let currentTestimonialIndex = 0;
 
 function updateTestimonialCarousel() {
+  // Defensive: ensure testimonials exist
+  if (!testimonialsSlider || !testimonialCards || testimonialCards.length === 0) return;
+  const containerEl = document.querySelector('.testimonials-container');
+  if (!containerEl) return;
+
   // Calculate the offset for centering the active testimonial
-  const cardWidth = testimonialCards[0].offsetWidth;
+  const cardWidth = testimonialCards[0].offsetWidth || 0;
   const gap = 40; // Match CSS gap
-  const containerWidth = document.querySelector('.testimonials-container').offsetWidth;
+  const containerWidth = containerEl.offsetWidth || 0;
   const centerOffset = (containerWidth - cardWidth) / 2;
   const translateX = -(currentTestimonialIndex * (cardWidth + gap)) + centerOffset;
-  
-  // Apply transform
+
+  // Apply transform (safely)
   testimonialsSlider.style.transform = `translateX(${translateX}px)`;
-  
+
   // Update active states
   testimonialCards.forEach((card, index) => {
     card.classList.toggle('active', index === currentTestimonialIndex);
@@ -303,11 +340,13 @@ function updateTestimonialCarousel() {
 }
 
 function showNextTestimonial() {
+  if (!testimonialCards || testimonialCards.length === 0) return;
   currentTestimonialIndex = (currentTestimonialIndex + 1) % testimonialCards.length;
   updateTestimonialCarousel();
 }
 
 function showPrevTestimonial() {
+  if (!testimonialCards || testimonialCards.length === 0) return;
   currentTestimonialIndex = currentTestimonialIndex === 0 
     ? testimonialCards.length - 1 
     : currentTestimonialIndex - 1;
@@ -334,8 +373,11 @@ window.addEventListener('resize', function() {
   }
 });
 
-// Auto-advance testimonials every 8 seconds
-let testimonialsAutoInterval = setInterval(showNextTestimonial, 8000);
+// Auto-advance testimonials every 8 seconds (only if testimonials exist)
+let testimonialsAutoInterval = null;
+if (testimonialCards && testimonialCards.length > 0) {
+  testimonialsAutoInterval = setInterval(showNextTestimonial, 8000);
+}
 
 // Pause auto-advance when user interacts
 if (testimonialNextBtn && testimonialPrevBtn) {

@@ -42,6 +42,8 @@
   justify-content: center;
   color: #fff;
 }
+
+/* End of contact page moved styles */
 .hero-overlay {
   position: absolute;
   inset: 0;
@@ -662,6 +664,34 @@ main { max-width:1200px; margin: 20px auto 80px; padding: 0 20px; }
     }
 }
 
+/* Projects navigation buttons (non-overlapping) */
+.projects-nav {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-left: 12px;
+}
+.projects-nav-btn {
+  background: transparent;
+  border: 1px solid rgba(0,0,0,0.08);
+  color: #222;
+  padding: 8px 12px;
+  font-size: 18px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.15s, transform 0.08s;
+}
+.projects-nav-btn:hover {
+  background: rgba(0,0,0,0.04);
+  transform: translateY(-1px);
+}
+
+/* On small screens move nav below filters to avoid crowding */
+@media (max-width: 900px) {
+  .projects-header-row { flex-direction: column; align-items: center; gap: 16px; }
+  .projects-nav { margin-left: 0; }
+}
+
 @media (max-width: 900px) {
     .projects-section {
         padding: 50px 16px;
@@ -735,6 +765,29 @@ main { max-width:1200px; margin: 20px auto 80px; padding: 0 20px; }
         max-width: calc(60% - 16px);
         padding: 32px;
     }
+}
+
+/* UI: rounded square nav buttons for testimonials (visual only) */
+.testimonial-nav-btn {
+  background: transparent;
+  border: 1px solid rgba(0,0,0,0.08);
+  color: #222;
+  padding: 8px 12px;
+  font-size: 18px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.15s, transform 0.08s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.testimonial-nav-btn:hover {
+  background: rgba(0,0,0,0.04);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 900px) {
+  .testimonial-nav-btn { font-size: 16px; padding: 6px 10px; }
 }
 
 @media (max-width: 900px) {
@@ -1483,6 +1536,8 @@ main { max-width:1200px; margin: 20px auto 80px; padding: 0 20px; }
 }
 
 .footer-bottom-content {
+  /* keep the content centered on the page and allow exact left/center/right placement */
+  position: relative;
   max-width: 1400px;
   margin: 0 auto;
   padding: 0 32px;
@@ -1502,12 +1557,19 @@ main { max-width:1200px; margin: 20px auto 80px; padding: 0 20px; }
 }
 
 .footer-center {
+  /* center block is absolutely centered within the footer container so
+     left and right items sit flush to edges while this stays visually centered */
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   align-items: center;
   gap: 16px;
-  flex: 1 1 auto;
   justify-content: center;
   text-align: center;
+  /* limit width so it doesn't overlap left/right items on narrow wide screens */
+  max-width: calc(100% - 360px);
+  pointer-events: auto;
 }
 
 .footer-center a {
@@ -1544,7 +1606,12 @@ main { max-width:1200px; margin: 20px auto 80px; padding: 0 20px; }
     text-align: center;
     align-items: center;
   }
-  .footer-center { justify-content: center; }
+  /* revert absolute centering on small screens so items stack naturally */
+  .footer-center {
+    position: static;
+    transform: none;
+    justify-content: center;
+  }
   .footer-designed-by { text-align: center; }
 }
 
@@ -1594,6 +1661,58 @@ main { max-width:1200px; margin: 20px auto 80px; padding: 0 20px; }
     transform: scale(1);
   }
 }
+
+/* ------------------------------------------------------------------ */
+/* Mobile-specific footer centering (moved from components/footer.html) */
+/* Placed after the main footer rules to ensure it overrides defaults */
+/* ------------------------------------------------------------------ */
+@media (max-width:700px) {
+  .footer-container {
+    display:flex !important;
+    flex-direction:column;
+    align-items:center;
+    gap:18px;
+  }
+  .footer-col {
+    /* width:100%; */
+    text-align:center;
+    padding:0 12px;
+  }
+  .footer-logo-row { display:flex; align-items:center; width: 100%;justify-content:center; gap:12px; }
+  .footer-logo { max-width:72px; height:auto; }
+  /* Ensure headings are centered even if overridden by global CSS */
+  .footer-heading, .footer-col .footer-heading {
+    display:block;
+    width:100%;
+    margin:0 auto 8px;
+    text-align:center !important;
+  }
+  .footer-description { text-align:center; }
+  /* Stack contact items and center content on narrow screens */
+  .footer-contact .footer-contact-info .contact-item {
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:8px !important;
+    margin-bottom:12px !important;
+    text-align:center !important;
+  }
+  .footer-contact .footer-contact-info .contact-item i { min-width:24px; text-align:center; display:block; }
+  .footer-contact .footer-contact-info .contact-item span { display:block; }
+  .footer-col ul { padding:0; margin:8px auto; display:inline-block; }
+  .footer-col ul li { display:block; margin:8px 0; }
+  .footer-bottom .footer-bottom-content { display:flex; flex-direction:column; align-items:center; gap:8px; }
+  .footer-designed-by { text-align:center; }
+  .footer-social a { margin:0 8px; }
+  /* small padding adjustments that were previously inline */
+  .footer-container { padding-top: 10px; }
+  .footer-social { padding-bottom: 25px; }
+  .footer-designed-by { padding-top: 10px; }
+  .footer-logo { padding-top: 15px;}
+}
+
+/* End moved footer mobile styles (placed after main footer rules) */
 
 /* Responsive Footer */
 @media (max-width: 1024px) {
@@ -1646,7 +1765,8 @@ main { max-width:1200px; margin: 20px auto 80px; padding: 0 20px; }
   font-weight: 400;
   line-height: 1.4;
   flex: 0 0 auto;
-  margin-left: 220px;
+  margin-left: 0; /* reset any legacy offset so item sits on the left */
+  text-align: left;
 }
 
 .footer-links-group {
@@ -2737,29 +2857,22 @@ body {
   }
 
   .testimonial-nav-btn {
-    width: 50px;
-    height: 50px;
-    border: 2px solid #e0e0e0;
-    background: #fff;
-    border-radius: 50%;
+    background: transparent;
+    border: 1px solid rgba(0,0,0,0.08);
+    color: #222;
+    padding: 8px 12px;
+    font-size: 18px;
     cursor: pointer;
-    display: flex;
+    border-radius: 6px;
+    transition: background 0.15s, transform 0.08s;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
-    color: #888;
-    font-size: 1.1rem;
   }
 
   .testimonial-nav-btn:hover {
-    border-color: #cddc39;
-    color: #cddc39;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(205, 220, 57, 0.2);
-  }
-
-  .testimonial-nav-btn:active {
-    transform: translateY(0);
+    background: rgba(0,0,0,0.04);
+    transform: translateY(-1px);
   }
 
   .testimonials-container {

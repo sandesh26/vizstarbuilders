@@ -103,6 +103,16 @@
 
   // Wire basic interactions (work even if JSON not fetched)
   function wireUI(projectData) {
+    // re-query thumbnails/strip at time of wiring (defensive if DOM changed)
+    const thumbnailStripEl = qs('.project-thumbnail-strip') || document.querySelector('.project-thumbnail-strip');
+    // remove accidental duplicate strips, keep the first
+    if (thumbnailStripEl) {
+      const allStrips = qsa('.project-thumbnail-strip');
+      if (allStrips.length > 1) {
+        allStrips.slice(1).forEach(s => { try { s.parentNode.removeChild(s); } catch (e) {} });
+      }
+    }
+
     const thumbnails = qsa('.project-thumbnail');
     
     // register event for each thumbnail click - restart auto-slide timer
@@ -121,11 +131,9 @@
       });
     });
 
-    // Delegated click handler on the thumbnail strip — this is resilient if thumbnails
-    // are (re)rendered after wiring (avoids missing listeners). We guard with a flag
-    // so we don't attach multiple handlers on repeated wireUI calls.
-    if (thumbnailStrip && !thumbnailStrip.dataset.bound) {
-      thumbnailStrip.addEventListener('click', (ev) => {
+    // Delegated click handler on the thumbnail strip — use the local strip reference
+    if (thumbnailStripEl && !thumbnailStripEl.dataset.bound) {
+      thumbnailStripEl.addEventListener('click', (ev) => {
         const tgt = ev.target.closest && ev.target.closest('.project-thumbnail');
         if (!tgt) return;
         // Determine index: prefer explicit data-idx, fallback to node list index
@@ -140,7 +148,7 @@
           restartAutoSlide();
         }
       }, false);
-      thumbnailStrip.dataset.bound = '1';
+      thumbnailStripEl.dataset.bound = '1';
     }
 
     // arrows
@@ -417,35 +425,119 @@
 
   // Fullscreen controls wiring
   (function wireFullscreen() {
-    const fsBtn = qs('.project-fullscreen-btn');
-    const fsExitBtn = qs('.project-exit-fullscreen-btn');
-    const bgContainer = qs('.project-bg-container');
+    // use let so we can re-query if DOM was modified unexpectedly
+    let fsBtn = qs('.project-fullscreen-btn');
+    let fsExitBtn = qs('.project-exit-fullscreen-btn');
+    let bgContainer = qs('.project-bg-container');
 
-    if (!bgContainer) return;
+    // if any element is missing, attempt a fresh query (defensive)
+    if (!bgContainer) bgContainer = document.querySelector('.project-bg-container');
+    if (!fsBtn) fsBtn = document.querySelector('.project-fullscreen-btn');
+    if (!fsExitBtn) fsExitBtn = document.querySelector('.project-exit-fullscreen-btn');
 
-    function enterFullscreen() {
-      // prefer standard API, fall back to webkit where needed
-      try {
-        if (bgContainer.requestFullscreen) return bgContainer.requestFullscreen();
-        if (bgContainer.webkitRequestFullscreen) return bgContainer.webkitRequestFullscreen();
-        if (bgContainer.msRequestFullscreen) return bgContainer.msRequestFullscreen();
-      } catch (e) {
-        console.warn('Fullscreen request failed', e);
-      }
+    if (!bgContainer) {
+      console.warn('Fullscreen: .project-bg-container not found, aborting fullscreen wiring');
+      return;
     }
 
-    function exitFullscreen() {
+    // debug: log elements found
+    console.debug('Fullscreen wiring:', { bgContainer, fsBtn, fsExitBtn });
+
+    // fallback flag used when browser refuses/doesn't support element fullscreen
+    let fsFallback = false;
+
+    async function enterFullscreen() {
+      // prefer standard API, fall back to documentElement or vendor prefixed APIs where needed
+      fsFallback = false;
       try {
-        if (document.exitFullscreen) return document.exitFullscreen();
-        if (document.webkitExitFullscreen) return document.webkitExitFullscreen();
-        if (document.msExitFullscreen) return document.msExitFullscreen();
+        if (bgContainer.requestFullscreen) {
+          console.debug('Fullscreen: requesting element fullscreen on bgContainer');
+          await bgContainer.requestFullscreen();
+          return;
+        }
+      } catch (err) {
+        console.warn('bgContainer.requestFullscreen failed', err);
+      }
+
+      // some browsers prefer requesting fullscreen on the documentElement
+      try {
+        if (document.documentElement.requestFullscreen) {
+          console.debug('Fullscreen: requesting element fullscreen on documentElement');
+          await document.documentElement.requestFullscreen();
+          return;
+        }
+      } catch (err) {
+        console.warn('documentElement.requestFullscreen failed', err);
+      }
+
+      // vendor-prefixed fallbacks
+      try {
+        if (bgContainer.webkitRequestFullscreen) { console.debug('webkitRequestFullscreen on bgContainer'); bgContainer.webkitRequestFullscreen(); return; }
+        if (bgContainer.msRequestFullscreen) { console.debug('msRequestFullscreen on bgContainer'); bgContainer.msRequestFullscreen(); return; }
+        if (document.documentElement.webkitRequestFullscreen) { console.debug('webkitRequestFullscreen on documentElement'); document.documentElement.webkitRequestFullscreen(); return; }
+      } catch (e) {
+        console.warn('vendor-prefixed fullscreen request failed', e);
+      }
+
+      // If all attempts fail, use CSS fallback
+      console.warn('All native fullscreen attempts failed — using CSS fallback');
+      doFsFallback();
+    }
+
+    async function exitFullscreen() {
+      try {
+        if (document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement) {
+          if (document.exitFullscreen) { await document.exitFullscreen(); return; }
+          if (document.webkitExitFullscreen) { document.webkitExitFullscreen(); return; }
+          if (document.msExitFullscreen) { document.msExitFullscreen(); return; }
+        }
       } catch (e) {
         console.warn('Exit fullscreen failed', e);
       }
+      // If the browser fullscreen is not active but we used fallback, remove it
+      if (fsFallback) {
+        undoFsFallback();
+      }
     }
 
-  if (fsBtn) fsBtn.addEventListener('click', (ev) => { ev.preventDefault(); enterFullscreen(); });
-  if (fsExitBtn) fsExitBtn.addEventListener('click', (ev) => { ev.preventDefault(); exitFullscreen(); });
+    function doFsFallback() {
+      // Add classes that simulate fullscreen via CSS. This works reliably when the native API
+      // is unavailable or blocked by the browser.
+      document.body.classList.add('in-fullscreen');
+      document.body.classList.add('fs-fallback');
+      fsFallback = true;
+      // ensure auto-slide pauses while in fullscreen-like state
+      stopAutoSlide();
+    }
+
+    function undoFsFallback() {
+      document.body.classList.remove('in-fullscreen');
+      document.body.classList.remove('fs-fallback');
+      fsFallback = false;
+      // resume auto-slide after a short delay
+      setTimeout(() => { if (isAutoSlideActive) startAutoSlide(); }, 80);
+    }
+
+  if (fsBtn) fsBtn.addEventListener('click', (ev) => { ev.preventDefault(); console.debug('Fullscreen button clicked'); enterFullscreen(); });
+  if (fsExitBtn) fsExitBtn.addEventListener('click', (ev) => { ev.preventDefault(); console.debug('Exit fullscreen clicked'); exitFullscreen(); });
+
+  // Delegated handlers as a fallback in case elements are re-rendered or wiring ran too early
+  document.addEventListener('click', (ev) => {
+    const b = ev.target && ev.target.closest && ev.target.closest('.project-fullscreen-btn');
+    if (b) {
+      ev.preventDefault();
+      console.debug('Delegated: fullscreen button clicked');
+      enterFullscreen();
+      return;
+    }
+    const x = ev.target && ev.target.closest && ev.target.closest('.project-exit-fullscreen-btn');
+    if (x) {
+      ev.preventDefault();
+      console.debug('Delegated: exit fullscreen clicked');
+      exitFullscreen();
+      return;
+    }
+  });
 
   // Fullscreen-side navigation arrows (these sit inside the bg container so they're visible in fullscreen)
   const fsLeft = qs('.project-fs-arrow.left');
@@ -456,6 +548,7 @@
     // Keep UI in sync when fullscreen is toggled via ESC or other means
     document.addEventListener('fullscreenchange', () => {
       const isFS = !!document.fullscreenElement;
+      console.debug('fullscreenchange ->', isFS, document.fullscreenElement);
       document.body.classList.toggle('in-fullscreen', isFS);
       // when exiting fullscreen, ensure auto-slide resumes
       if (!isFS) restartAutoSlide();
@@ -463,6 +556,7 @@
     // also support webkit prefixed event
     document.addEventListener('webkitfullscreenchange', () => {
       const isFS = !!(document.webkitFullscreenElement || document.fullscreenElement);
+      console.debug('webkitfullscreenchange ->', isFS);
       document.body.classList.toggle('in-fullscreen', isFS);
       if (!isFS) restartAutoSlide();
     });

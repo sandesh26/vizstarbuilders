@@ -10,6 +10,18 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link rel="stylesheet" href="assets/style.css">
   <style>
+    /* Loader styles (Logo + Ring) */
+    :root{--loader-green:#28a745}
+    .page-loader{
+      position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#fff;z-index:99999;transition:opacity .45s ease;pointer-events:auto
+    }
+    .page-loader.hidden{opacity:0;pointer-events:none}
+    .page-loader .loader-inner{display:flex;flex-direction:column;align-items:center;gap:12px}
+    .page-loader svg{width:120px;height:120px;display:block}
+    .loader-percent{font-size:14px;color:var(--loader-green);font-weight:700}
+    @media (prefers-reduced-motion: reduce){
+      .page-loader svg{animation:none !important}
+    }
     /* Page-specific styles for layout inspiration */
     body { background: #fbfbfb; padding-top: 92px; }
     .container { max-width: 1200px; margin: 0 auto; padding: 28px; }
@@ -96,6 +108,18 @@
 <body>
   <div id="header-placeholder"></div>
 
+  <!-- Page loader: Logo + Ring (shows on page load for 3.5s min) -->
+  <div id="pageLoader" class="page-loader" role="status" aria-live="polite" aria-label="Loading content">
+    <div class="loader-inner">
+      <svg viewBox="0 0 120 120" aria-hidden="true">
+        <circle cx="60" cy="60" r="44" stroke="#e6e6e6" stroke-width="10" fill="none"></circle>
+        <circle id="loaderRing" cx="60" cy="60" r="44" stroke="var(--loader-green)" stroke-width="10" fill="none" stroke-linecap="round" transform="rotate(-90 60 60)"></circle>
+        <text id="loaderText" x="60" y="66" text-anchor="middle" font-size="14" fill="var(--loader-green)" font-family="Poppins, Arial, sans-serif">0%</text>
+      </svg>
+      <div class="loader-percent">Loading Vizstar Projects</div>
+    </div>
+  </div>
+
   <main class="container">
     <h1 class="page-title">Our Projects </h1>
 
@@ -111,6 +135,58 @@
   <div id="footer-placeholder"></div>
 
   <script src="assets/js/all-projects.js" defer></script>
+  <script>
+    // Page loader animation (Logo + Ring)
+    (function(){
+      const MIN_MS = 2000; // minimum display time
+      const MAX_MS = 4000; // safety max
+      const start = Date.now();
+      const ring = document.getElementById('loaderRing');
+      const text = document.getElementById('loaderText');
+      const loader = document.getElementById('pageLoader');
+      if (!ring || !text || !loader) return;
+
+      // prepare ring
+      const length = ring.getTotalLength();
+      ring.style.strokeDasharray = length;
+      ring.style.strokeDashoffset = length;
+
+      let rafId = null;
+      const duration = MIN_MS; // animate over min duration
+
+      function step(ts){
+        const t = Math.min(1, (Date.now() - start) / duration);
+        const offset = Math.max(0, length * (1 - t));
+        ring.style.strokeDashoffset = offset;
+        text.textContent = Math.round(t * 100) + '%';
+        if (t < 1) rafId = requestAnimationFrame(step);
+      }
+      // start animation frame loop
+      rafId = requestAnimationFrame(step);
+
+      function hideLoader(){
+        if (rafId) cancelAnimationFrame(rafId);
+        loader.classList.add('hidden');
+        setTimeout(()=>{ try{ loader.remove(); }catch(e){} }, 500);
+      }
+
+      // Ensure minimum display time, but hide after window load or MAX_MS
+      let called = false;
+      function tryFinish(){
+        if (called) return; called = true;
+        const elapsed = Date.now() - start;
+        const wait = Math.max(0, MIN_MS - elapsed);
+        setTimeout(hideLoader, wait);
+      }
+
+      window.addEventListener('load', tryFinish);
+      // Fallback in case load doesn't fire in time
+      setTimeout(tryFinish, MAX_MS);
+
+      // Allow Esc to skip early
+      document.addEventListener('keydown', (e)=>{ if (e.key === 'Escape') hideLoader(); });
+    })();
+  </script>
   <script src="assets/main.js"></script>
 </body>
 </html>
