@@ -77,7 +77,7 @@ $metaImage = $initialImage;
             </button>
             <div class="project-hide-info">HIDE INFORMATION</div>
             <div class="project-info-content">
-                <h1 class="project-title"><?php echo nl2br(h($project['title'] ?? '')); ?></h1>
+                <h1 class="project-title" style="color: black;"><?php echo nl2br(h($project['title'] ?? '')); ?></h1>
                 <p class="project-desc"><?php echo h($project['description'] ?? ''); ?></p>
                 <?php
                 // Render only non-empty detail rows
