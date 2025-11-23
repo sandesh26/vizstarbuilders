@@ -101,6 +101,23 @@
 .band-item h4 { margin:6px 0 6px; font-size:14px; text-transform:uppercase; letter-spacing:1px; }
 .band-item p { font-size:13px; opacity:0.9; }
 
+/* Ensure any links (including auto-detected phone/email links on mobile) inside
+   the contact band are white and have no underline so they match desktop styling */
+.contact-band .band-item a,
+.contact-band .band-item a:link,
+.contact-band .band-item a:visited,
+.contact-band .band-item a:hover {
+  color: #fff !important;
+  text-decoration: none !important;
+}
+
+/* Specifically target auto-detected tel/mailto links as extra precaution */
+.contact-band .band-item a[href^="tel:"],
+.contact-band .band-item a[href^="mailto:"] {
+  color: #fff !important;
+  text-decoration: none !important;
+}
+
 main { max-width:1200px; margin: 20px auto 80px; padding: 0 20px; }
 
 .drop-line-title { text-align:center; font-weight:700; margin-top:18px; margin-bottom:8px; }
