@@ -1851,7 +1851,7 @@ body.project-page {
 .project-close-btn:hover { background: rgba(0,0,0,0.2); color:#333; transform:scale(1.1); }
 .project-close-btn:active { transform:scale(0.95); }
 
-.project-title { font-size:1.75rem; font-weight:700; color:#1a1a1a; margin:0 0 16px 0; line-height:1.25; }
+.project-title { font-size:1.75rem; font-weight:700; color:white; margin:0 0 16px 0; line-height:1.25; }
 .project-desc { color:#555; font-size:.9rem; line-height:1.55; margin-bottom:20px; }
 
 .project-details-table { width:100%; border-collapse:collapse; margin-bottom:20px; }
@@ -2169,7 +2169,7 @@ body {
 
 .project-hide-info:hover { color: #444; }
 
-.project-title { font-size: 1.75rem; font-weight: 700; color: #1a1a1a; margin: 0 0 16px 0; line-height: 1.25; letter-spacing: -0.02em; }
+.project-title { font-size: 1.75rem; font-weight: 700; color: white; margin: 0 0 16px 0; line-height: 1.25; letter-spacing: -0.02em; }
 .project-desc { color: #555; font-size: 0.9rem; line-height: 1.55; margin-bottom: 20px; font-weight: 400; }
 
 .project-details-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
@@ -3117,6 +3117,11 @@ body {
 .carousel-dots .dot.active {
   background: #222;
 }
+/* Ensure hero overlay sits above any decorative/animated boxes so its links are clickable */
+.carousel-container .hero-text-overlay {
+  z-index: 1000 !important;
+  pointer-events: auto;
+}
 @media (max-width: 900px) {
   .carousel-container, .carousel-slide img, .carousel-slide {
     height: 220px;
@@ -3462,8 +3467,8 @@ body {
     height: 60px;
     border-radius: 50%;
     object-fit: cover;
-    border: 3px solid #f8f8f8;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    /* border: 3px solid #f8f8f8;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1); */
   }
 
   .testimonial-info h4 {
