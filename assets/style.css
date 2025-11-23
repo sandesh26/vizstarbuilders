@@ -1,25 +1,14 @@
-/* @font-face {
-  font-family: 'Book Antiqua';
-  src: local('Book Antiqua'),
-       url('/assets/fonts/Book Antiqua/bookantiqua.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
 
-@font-face {
-  font-family: 'Book Antiqua';
-  src: local('Book Antiqua Bold'),
-       url('/assets/fonts/Book Antiqua/bookantiqua_bold.ttf') format('truetype');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
+/* ------------------------------------------------------------------ */
+/* Fix for mobile viewport height quirks
+   We expose a dynamic --vh value (set by JS) and prefer it where full
+   viewport height is required. This prevents layout distortion on some
+   mobile browsers (notably Chrome on iPad / other mobile WebKit shells)
+*/
+:root { --vh: 1vh; }
 
-/* Apply the hosted Book Antiqua (or system if available) across site */
-/* html, body, button, input, select, textarea {
-  font-family: 'Book Antiqua', Palatino, 'Palatino Linotype', serif !important;
-} */ 
+/* Prefer dynamic viewport unit where full-viewport height is required. */
+
 
 /* Contact form row side-by-side layout */
 .contact-form-flex {
@@ -548,7 +537,7 @@ main { max-width:1200px; margin: 20px auto 80px; padding: 0 20px; }
     }
     
     .hero-text-overlay {
-        display: none;
+        display: none !important;
     }
     
     .carousel-slide > div[style*="position: absolute"] {
@@ -3042,7 +3031,7 @@ body {
 }
 .carousel-section {
   width: 100%;
-  min-height: 100vh;
+  /* min-height: 100vh; */
   background: white;
   display: flex;
   justify-content: center;

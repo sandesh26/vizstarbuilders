@@ -2,6 +2,20 @@
 // Slide menu and header initialization (now handled by PHP includes)
 document.addEventListener('DOMContentLoaded', function() {
 
+  // Fix for mobile viewport height (address bar / UI chrome) differences.
+  // This sets a CSS variable `--vh` equal to 1% of the actual innerHeight
+  // so CSS can use `calc(var(--vh) * 100)` instead of `100vh`.
+  function setVh() {
+    try {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', vh + 'px');
+    } catch (e) { /* ignore in very old browsers */ }
+  }
+  setVh();
+  window.addEventListener('resize', setVh);
+  window.addEventListener('orientationchange', setVh);
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', setVh);
+
   function loadHTML(elementId, filePath) {
         const xhr = new XMLHttpRequest();
         xhr.open("GET", filePath, false);
