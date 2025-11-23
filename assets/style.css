@@ -1935,7 +1935,7 @@ h1.page-title { font-size: 2rem; margin-bottom: 8px; }
   break-inside: avoid;
   border-radius: 6px;
   overflow: hidden;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+  /* box-shadow: 0 6px 20px rgba(0,0,0,0.12); */
   cursor: pointer;
   background: #111;
   will-change: transform, box-shadow;
