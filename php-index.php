@@ -18,7 +18,7 @@
   <section class="carousel-section">
     <div class="carousel-container">
       <div class="carousel-slide active">
-        <img src="assets/images/carousel1.jpg" alt="Project 1" />
+  <img src="assets/images/projects/vizstar/vizstar-1.jpg" alt="Project 1" />
         <div style="display: flex; gap: 48px; align-items: flex-start; position: absolute; left: 8vw; top: 8vh; z-index: 4;">
           <div style="display: flex; flex-direction: column; align-items: center;">
             <div id="hero-animated-box-square"></div>
@@ -31,10 +31,10 @@
         </div>
       </div>
       <div class="carousel-slide">
-        <img src="assets/images/carousel2.jpg" alt="Project 2" />
+  <img src="assets/images/projects/vizstar/vizstar-2.jpg" alt="Project 2" />
       </div>
       <div class="carousel-slide">
-        <img src="assets/images/carousel3.jpg" alt="Project 3" />
+        <img src="assets/images/projects/vizstar/vizstar-3.jpg" alt="Project 3" />
       </div>
       <div class="carousel-dots">
         <span class="dot active"></span>
@@ -64,7 +64,7 @@
       </div>
       <div class="about-right">
         <div class="about-img-bg"></div>
-        <img class="about-img" src="assets/images/carousel1.jpg" alt="About Vizstar" />
+  <img class="about-img" src="assets/images/projects/vizstar/vizstar-1.jpg" alt="About Vizstar" />
       </div>
     </div>
   </section>

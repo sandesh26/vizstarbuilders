@@ -54,6 +54,147 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
+// Project page scripts (migrated from project.html)
+// Scoped: run only when a .project-bg exists on the page
+document.addEventListener('DOMContentLoaded', function() {
+  if (!document.querySelector('.project-bg')) return;
+
+  const projectImages = [
+    // 'assets/images/projects/vizstar/vizstar-1.jpg',
+    // 'assets/images/projects/vizstar/vizstar-2.jpg',
+    // 'assets/images/projects/vizstar/vizstar-3.jpg'
+  ];
+
+  let projectCurrentImageIndex = 0;
+  let projectPendingIndex = null;
+
+  const projectBg = document.querySelector('.project-bg');
+  const thumbnails = Array.from(document.querySelectorAll('.project-thumbnail'));
+  // If there are no configured images (projectImages empty) and no server-rendered
+  // thumbnails, skip wiring this legacy project script to avoid trying to load
+  // an undefined image URL (which caused requests to "/undefined"). The
+  // modern `assets/js/project-loader.js` handles dynamic images when JSON or
+  // thumbnails are present.
+  if ((!projectImages || projectImages.length === 0) && thumbnails.length === 0) {
+    // Nothing for this legacy script to do — bail out early.
+    return;
+  }
+  const leftArrow = document.querySelector('.project-arrow.left');
+  const rightArrow = document.querySelector('.project-arrow.right');
+
+  function updateBackgroundImage(index) {
+    if (!projectBg) return;
+    if (projectBg.classList && projectBg.classList.contains('transitioning')) return;
+
+    projectBg.classList.add('transitioning');
+
+    const transitionOverlay = document.createElement('div');
+    transitionOverlay.style.cssText = '\n      position: fixed;\n      top: 0;\n      left: 0;\n      width: 100vw;\n      height: 100vh;\n      background: rgba(0,0,0,0.3);\n      z-index: 1;\n      opacity: 0;\n      transition: opacity 0.4s ease;\n      pointer-events: none;\n    ';
+    document.body.appendChild(transitionOverlay);
+
+    // Fade in overlay quickly
+    setTimeout(() => { transitionOverlay.style.opacity = '1'; }, 50);
+
+    // Preload the image to avoid a blank frame when swapping src
+    projectPendingIndex = index;
+    const imgPre = new Image();
+    imgPre.src = projectImages[index];
+
+    const applyLoadedImage = () => {
+      if (projectPendingIndex !== index) return; // a newer request arrived
+      projectBg.src = imgPre.src;
+
+      // Small pause so browser can paint; then remove transitioning and fade overlay
+      setTimeout(() => {
+        if (projectBg.classList) projectBg.classList.remove('transitioning');
+        transitionOverlay.style.opacity = '0';
+        setTimeout(() => { if (transitionOverlay.parentNode) transitionOverlay.parentNode.removeChild(transitionOverlay); }, 400);
+      }, 100);
+    };
+
+    imgPre.onload = applyLoadedImage;
+    imgPre.onerror = () => {
+      // Fallback: still apply src (may 404) but ensure overlay is removed gracefully
+      applyLoadedImage();
+    };
+
+    // Update thumbnails with stagger effect (visual feedback immediately)
+    thumbnails.forEach((thumb, i) => {
+      setTimeout(() => { thumb.classList.toggle('active', i === index); }, i * 50);
+    });
+
+    projectCurrentImageIndex = index;
+  }
+
+  function nextImage() {
+    const next = (projectCurrentImageIndex + 1) % projectImages.length;
+    updateBackgroundImage(next);
+  }
+
+  function prevImage() {
+    const prev = (projectCurrentImageIndex - 1 + projectImages.length) % projectImages.length;
+    updateBackgroundImage(prev);
+  }
+
+  if (leftArrow) leftArrow.addEventListener('click', prevImage);
+  if (rightArrow) rightArrow.addEventListener('click', nextImage);
+
+  thumbnails.forEach((thumb, index) => { if (thumb) thumb.addEventListener('click', () => updateBackgroundImage(index)); });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') prevImage();
+    if (e.key === 'ArrowRight') nextImage();
+  });
+
+  // Hide/Show info functionality
+  const hideInfo = document.querySelector('.project-hide-info');
+  const infoCard = document.querySelector('.project-info-card');
+  const infoContent = document.querySelector('.project-info-content');
+  // const mainContent = document.querySelector('.project-main-content'); // unused currently
+
+  if (hideInfo && infoContent && infoCard) {
+    hideInfo.setAttribute('role', 'button');
+    hideInfo.setAttribute('aria-expanded', String(!infoContent.classList.contains('hidden')));
+
+    hideInfo.addEventListener('click', () => {
+      hideInfo.style.pointerEvents = 'none';
+
+      const CARD_COLLAPSE_DELAY_MS = 480;
+      const CARD_EXPAND_DELAY_MS = 320;
+      const CARD_TRANSITION_MS = 700;
+
+      const currentlyHidden = infoContent.classList.contains('hidden');
+
+      if (!currentlyHidden) {
+        infoContent.classList.add('hidden');
+        hideInfo.setAttribute('aria-expanded', 'false');
+        hideInfo.textContent = 'SHOW INFORMATION';
+        setTimeout(() => infoCard.classList.add('hidden'), CARD_COLLAPSE_DELAY_MS);
+        setTimeout(() => { hideInfo.style.pointerEvents = 'auto'; }, CARD_TRANSITION_MS + 120);
+      } else {
+        infoCard.classList.remove('hidden');
+        hideInfo.setAttribute('aria-expanded', 'true');
+        hideInfo.textContent = 'HIDE INFORMATION';
+        setTimeout(() => infoContent.classList.remove('hidden'), CARD_EXPAND_DELAY_MS);
+        setTimeout(() => { hideInfo.style.pointerEvents = 'auto'; }, CARD_TRANSITION_MS + 120);
+      }
+    });
+  }
+
+  // Add subtle loading animation helper
+  function addLoadingEffect() {
+    const loader = document.createElement('div');
+    loader.style.cssText = '\n      position: fixed;\n      top: 50%;\n      left: 50%;\n      transform: translate(-50%, -50%);\n      width: 40px;\n      height: 40px;\n      border: 3px solid rgba(255,255,255,0.3);\n      border-top: 3px solid rgba(255,255,255,0.8);\n      border-radius: 50%;\n      animation: spin 1s linear infinite;\n      z-index: 10;\n      opacity: 0;\n      transition: opacity 0.3s ease;\n    ';
+
+    const style = document.createElement('style');
+    style.textContent = '\n      @keyframes spin {\n        0% { transform: translate(-50%, -50%) rotate(0deg); }\n        100% { transform: translate(-50%, -50%) rotate(360deg); }\n      }\n    ';
+    document.head.appendChild(style);
+
+    return loader;
+  }
+
+});
+
 // Main JavaScript for Vizstar Builder
 
 // Carousel functionality
@@ -388,3 +529,104 @@ if (testimonialNextBtn && testimonialPrevBtn) {
     });
   });
 }
+
+// Contact page: AJAX form submit and inline result messages
+// This runs only when a .contact-form exists on the page
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.querySelector('.contact-form');
+  if (!form) return;
+
+  function showContactMessage(type, text) {
+    let msg = document.getElementById('contact-result');
+    if (!msg) {
+      msg = document.createElement('div');
+      msg.id = 'contact-result';
+      msg.style.margin = '12px 0';
+      msg.style.padding = '12px';
+      msg.style.borderRadius = '6px';
+    }
+    if (type === 'success') {
+      msg.style.background = '#e6ffef';
+      msg.style.color = '#065f46';
+    } else {
+      msg.style.background = '#fff1f2';
+      msg.style.color = '#7f1d1d';
+    }
+    msg.textContent = text;
+    msg.style.display = 'block';
+    const wrap = document.querySelector('.contact-form-wrap');
+    if (wrap) wrap.insertBefore(msg, wrap.firstChild);
+  }
+
+  // If the server redirected back with query params, show message
+  try {
+    const params = new URLSearchParams(location.search);
+    if (params.get('sent') === '1') {
+      showContactMessage('success', 'Thank you — your message was sent successfully.');
+    } else if (params.get('error') === '1') {
+      showContactMessage('error', 'Sorry — we could not send your message. Please try again later.');
+    }
+  } catch (err) {
+    // ignore malformed URLSearchParams in older browsers
+  }
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const submitBtn = form.querySelector('button[type=submit]');
+    let originalBtnText = '';
+    if (submitBtn) {
+      originalBtnText = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending...';
+    }
+
+    try {
+      const resp = await fetch(form.action, {
+        method: (form.method || 'POST').toUpperCase(),
+        body: new FormData(form),
+        credentials: 'same-origin',
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'Accept': 'application/json,text/html'
+        }
+      });
+
+      const contentType = (resp.headers.get('content-type') || '').toLowerCase();
+      if (contentType.includes('application/json')) {
+        const json = await resp.json();
+        if (json && (json.sent == 1 || json.success === true)) {
+          showContactMessage('success', json.message || 'Thank you — your message was sent successfully.');
+          form.reset();
+        } else {
+          showContactMessage('error', json.message || 'Sorry — we could not send your message. Please try again later.');
+        }
+      } else {
+        // If the server redirected with query params, resp.url will include them
+        if (resp.url && resp.url.indexOf('sent=1') !== -1) {
+          showContactMessage('success', 'Thank you — your message was sent successfully.');
+          form.reset();
+        } else if (resp.url && resp.url.indexOf('error=1') !== -1) {
+          showContactMessage('error', 'Sorry — we could not send your message. Please try again later.');
+        } else if (resp.ok) {
+          const text = await resp.text();
+          if (text.indexOf('Thank you') !== -1 || text.indexOf('sent successfully') !== -1) {
+            showContactMessage('success', 'Thank you — your message was sent successfully.');
+            form.reset();
+          } else {
+            showContactMessage('error', 'Sorry — we could not send your message. Please try again later.');
+          }
+        } else {
+          showContactMessage('error', 'Sorry — we could not send your message. Please try again later.');
+        }
+      }
+    } catch (err) {
+      console.error('Contact form submission failed:', err);
+      showContactMessage('error', 'An error occurred while sending — check your internet connection and try again.');
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
+      }
+    }
+  });
+});

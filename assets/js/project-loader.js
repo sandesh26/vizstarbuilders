@@ -57,6 +57,8 @@
 
   // State
   let currentIndex = 0;
+  // full projects list (populated when JSON fetched)
+  let allProjects = [];
   // normalize a src from JSON or DOM to root-relative if necessary
   function normalizeSrc(s){
     if(!s) return s;
@@ -80,8 +82,18 @@
     requestAnimationFrame(() => overlay.style.opacity = '1');
 
     setTimeout(() => {
-      projectBg.src = images[currentIndex].src || PLACEHOLDER;
-      projectBg.alt = images[currentIndex].alt || '';
+      // Only set the src when the image entry contains a valid src string.
+      const entry = images[currentIndex] || {};
+      const src = entry.src && typeof entry.src === 'string' ? entry.src : null;
+      if (src) {
+        projectBg.src = src;
+        projectBg.removeAttribute('aria-hidden');
+        projectBg.style.opacity = '';
+      } else {
+        // No valid src for this index — keep existing image visible and warn for debugging
+        console.warn('setImage: no src for image index', currentIndex, entry);
+      }
+      projectBg.alt = (entry && entry.alt) || '';
       qsa('.project-thumbnail').forEach((el, i) => el.classList.toggle('active', i === currentIndex));
       setTimeout(() => {
         projectBg.classList.remove('transitioning');
@@ -97,6 +109,25 @@
 
   function nextImage() { changeImage(1); }
   function prevImage() { changeImage(-1); }
+
+  // Navigate between projects (circular). Uses project id found on <body data-project-id>
+  // and the JSON `projects` list loaded into `allProjects`.
+  function navigateProject(delta) {
+    if (!allProjects || !allProjects.length) {
+      console.warn('navigateProject: no projects available');
+      return;
+    }
+    const bodyId = (document.body && document.body.dataset && document.body.dataset.projectId) ? document.body.dataset.projectId : getParam('project');
+    let idx = allProjects.findIndex(p => p && String(p.id) === String(bodyId));
+    if (idx === -1) idx = 0; // fallback to first project
+    const n = allProjects.length;
+    const next = ((idx + delta) % n + n) % n;
+    const nextId = allProjects[next] && allProjects[next].id;
+    if (!nextId) { console.warn('navigateProject: next project id missing'); return; }
+    const path = window.location.pathname;
+    // Navigate to same path with the project query param (server will render the project)
+    window.location.href = path + '?project=' + encodeURIComponent(nextId);
+  }
 
   // If the page was server-rendered, thumbnails and initial background already exist.
   // We wire interactions first; if JSON is available we enable deep linking and multi-project support.
@@ -151,26 +182,43 @@
       thumbnailStripEl.dataset.bound = '1';
     }
 
-    // arrows
-    if (leftArrow) leftArrow.addEventListener('click', () => {
-      prevImage();
-      restartAutoSlide(); // restart timer after manual navigation
+    // arrows — support Shift+click to navigate between projects (circular),
+    // plain click navigates images as before.
+    if (leftArrow) leftArrow.addEventListener('click', (ev) => {
+      if (ev && ev.shiftKey) {
+        navigateProject(-1);
+      } else {
+        prevImage();
+        restartAutoSlide(); // restart timer after manual navigation
+      }
     });
-    if (rightArrow) rightArrow.addEventListener('click', () => {
-      nextImage();
-      restartAutoSlide(); // restart timer after manual navigation
+    if (rightArrow) rightArrow.addEventListener('click', (ev) => {
+      if (ev && ev.shiftKey) {
+        navigateProject(1);
+      } else {
+        nextImage();
+        restartAutoSlide(); // restart timer after manual navigation
+      }
     });
 
     // keyboard
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowLeft') {
-        prevImage();
-        restartAutoSlide();
-      }
-      if (e.key === 'ArrowRight') {
-        nextImage();
-        restartAutoSlide();
-      }
+        if (e.key === 'ArrowLeft') {
+          if (e.shiftKey) {
+            navigateProject(-1);
+          } else {
+            prevImage();
+            restartAutoSlide();
+          }
+        }
+        if (e.key === 'ArrowRight') {
+          if (e.shiftKey) {
+            navigateProject(1);
+          } else {
+            nextImage();
+            restartAutoSlide();
+          }
+        }
     });
 
     // hide/show info — orchestrated animation for crisp transitions
@@ -311,6 +359,8 @@
   // Try fetch JSON to support deep-linking and richer behavior
   fetch(DATA_URL).then(res => res.ok ? res.json() : Promise.reject('no-data')).then(data => {
     const projects = data.projects || [];
+    // expose project list for navigation
+    allProjects = projects;
     if (!projects.length) return wireUI();
 
     const requested = getParam('project');
@@ -399,7 +449,7 @@
         }
       })(project);
 
-      wireUI(project);
+    wireUI(project);
   }).catch(() => {
     // If fetch fails, still wire UI to the server-rendered DOM
     wireUI();
@@ -542,8 +592,24 @@
   // Fullscreen-side navigation arrows (these sit inside the bg container so they're visible in fullscreen)
   const fsLeft = qs('.project-fs-arrow.left');
   const fsRight = qs('.project-fs-arrow.right');
-  if (fsLeft) fsLeft.addEventListener('click', (ev) => { ev.preventDefault(); prevImage(); restartAutoSlide(); });
-  if (fsRight) fsRight.addEventListener('click', (ev) => { ev.preventDefault(); nextImage(); restartAutoSlide(); });
+  if (fsLeft) fsLeft.addEventListener('click', (ev) => {
+    ev.preventDefault();
+    if (ev && ev.shiftKey) {
+      navigateProject(-1);
+    } else {
+      prevImage();
+      restartAutoSlide();
+    }
+  });
+  if (fsRight) fsRight.addEventListener('click', (ev) => {
+    ev.preventDefault();
+    if (ev && ev.shiftKey) {
+      navigateProject(1);
+    } else {
+      nextImage();
+      restartAutoSlide();
+    }
+  });
 
     // Keep UI in sync when fullscreen is toggled via ESC or other means
     document.addEventListener('fullscreenchange', () => {

@@ -9,106 +9,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link rel="stylesheet" href="assets/style.css">
-  <style>
-    /* Loader styles (Logo + Ring) */
-    :root{--loader-green:#28a745}
-    .page-loader{
-      position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#fff;z-index:99999;transition:opacity .45s ease;pointer-events:auto
-    }
-    .page-loader.hidden{opacity:0;pointer-events:none}
-    .page-loader .loader-inner{display:flex;flex-direction:column;align-items:center;gap:12px}
-    .page-loader svg{width:120px;height:120px;display:block}
-    .loader-percent{font-size:14px;color:var(--loader-green);font-weight:700}
-    @media (prefers-reduced-motion: reduce){
-      .page-loader svg{animation:none !important}
-    }
-    /* Page-specific styles for layout inspiration */
-    body { background: #fbfbfb; padding-top: 92px; }
-    .container { max-width: 1200px; margin: 0 auto; padding: 28px; }
-    h1.page-title { font-size: 2rem; margin-bottom: 8px; }
-    .hint { color: #666; margin-bottom: 20px; }
-
-    .layout-preview { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 6px 20px rgba(0,0,0,0.05); margin-bottom: 28px; }
-    .layout-header { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom: 16px; }
-    .layout-title { font-weight:700; color:#111; }
-    .layout-actions { display:flex; gap:8px; align-items:center; }
-    .btn { background:#111; color:#fff; padding:8px 12px; border:none; border-radius:6px; cursor:pointer; }
-    .btn.secondary { background:transparent; color:#111; border:1px solid #e6e6e6; }
-    .selected-badge { padding:6px 10px; background:#e6f7ff; color:#036; border-radius:999px; font-weight:600; }
-
-    /* Masonry-like gallery using CSS columns */
-    .masonry-grid {
-      column-count: 4;
-      column-gap: 16px;
-      width: 100%;
-    }
-    .m-card {
-      display: inline-block;
-      width: 100%;
-      margin: 0 0 16px;
-      break-inside: avoid;
-      border-radius: 6px;
-      overflow: hidden;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.12);
-      cursor: pointer;
-      background: #111;
-      will-change: transform, box-shadow;
-      transition: transform 280ms cubic-bezier(0.2,0.8,0.2,1), box-shadow 280ms ease, filter 280ms ease;
-      transform-origin: center center;
-      position: relative;
-    }
-    .m-card img { width:100%; height:auto; display:block; }
-    .m-card.large { transform: scale(1.02); }
-    .m-card.tall img { height: 320px; object-fit: cover; }
-    .m-card.wide { width: 100%; }
-
-    /* Pop-up hover/focus effect (desktop) */
-    @media (hover: hover) and (pointer: fine) {
-      .m-card:hover,
-      .m-card:focus-within {
-        transform: translateY(-10px) scale(1.03);
-        box-shadow: 0 18px 40px rgba(0,0,0,0.28);
-        z-index: 50;
-      }
-      .m-card img { transition: transform 1100ms ease; }
-      .m-card:hover img { transform: scale(1.04); }
-    }
-
-    /* Touch devices: reduce motion and avoid hover pops */
-    @media (hover: none) {
-      .m-card { transition: none; }
-      .m-card img { transition: none; }
-    }
-
-    @media (max-width: 1200px) { .masonry-grid { column-count: 3; } }
-    @media (max-width: 900px) { .masonry-grid { column-count: 2; } }
-    @media (max-width: 600px) { .masonry-grid { column-count: 1; } }
-
-    /* Masonry-like (two column stagger) */
-    .masonry { display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
-    .masonry .m-item { background:#fff; border-radius:8px; overflow:hidden; box-shadow:0 6px 16px rgba(0,0,0,0.06); }
-    .masonry .m-item img { width:100%; display:block; }
-    .masonry .m-item.small { height:140px; }
-    .masonry .m-item.large { height:260px; }
-
-    /* Large list with detail */
-    .list { display:flex; flex-direction:column; gap:14px; }
-    .list-item { display:flex; gap:16px; background:#fff; border-radius:10px; padding:12px; align-items:center; box-shadow:0 6px 18px rgba(0,0,0,0.05); }
-    .list-item img { width:220px; height:140px; object-fit:cover; border-radius:6px; flex-shrink:0; }
-    .list-item .info h3 { margin:0 0 8px 0; }
-    .list-item .info p { margin:0; color:#555; }
-
-    /* selection visual */
-    .layout-preview.selected { border:2px solid #e6f7ff; box-shadow:0 10px 26px rgba(3,102,214,0.08); }
-
-    @media (max-width:900px){ .list-item { flex-direction:column; align-items:flex-start; } .list-item img { width:100%; height:200px; } }
-    /* premium layouts removed */
-  </style>
+  <!-- Page styles moved to assets/style.css -->
 </head>
 <body>
   <div id="header-placeholder"></div>
 
-  <!-- Page loader: Logo + Ring (shows on page load for 3.5s min) -->
   <div id="pageLoader" class="page-loader" role="status" aria-live="polite" aria-label="Loading content">
     <div class="loader-inner">
       <svg viewBox="0 0 120 120" aria-hidden="true">
@@ -136,10 +41,9 @@
 
   <script src="assets/js/all-projects.js" defer></script>
   <script>
-    // Page loader animation (Logo + Ring)
     (function(){
-      const MIN_MS = 2000; // minimum display time
-      const MAX_MS = 4000; // safety max
+      const MIN_MS = 2000;
+      const MAX_MS = 4000;
       const start = Date.now();
       const ring = document.getElementById('loaderRing');
       const text = document.getElementById('loaderText');
